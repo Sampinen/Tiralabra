@@ -1,1 +1,1 @@
-# Tiralabra
+# Connect 4 solver
