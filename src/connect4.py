@@ -15,10 +15,10 @@ class ConnectFour:
 
     def print_board(self):
         output = ""
-        for line in Board:
+        for _,line in Board.items():
             output += "----------------\n"
-            for row in Board[line].items():
-                output += "|" +str(row[1][0])
+            for _,value in line.items():
+                output += "|" +str(value[0])
             output +="|\n"
         output += "----------------"
         print(output)
