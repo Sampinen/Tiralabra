@@ -1,3 +1,4 @@
+import random
 
 class ConnectFour:
     def __init__(self):
@@ -34,7 +35,8 @@ class ConnectFour:
         self.print_board()
 
     def ask(self):
-        player = str(input("Pick a symbol: "))
+        player = str(input("Pick a symbol: "))[0]
         while True:
             row = int(input("Pick a row: "))
             self.play(row, player)
+            self.play(random.randint(1,7),"P2")
