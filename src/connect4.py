@@ -55,22 +55,56 @@ class ConnectFour:
             if win2:
                 return False
 
+    def check_cell(self,c,r,p):
+        """c=coulumn, r= row, p=player"""
+        if self.board[c][r] == p:
+            return True
+        return False
+
+
+    def check_horizontal(self,c,r,p):
+        """c=coulumn, r= row, p=player"""
+        for i in range(4):
+            if not self.check_cell(c,r+i,p):
+                return False
+        return True
+
+    def check_vertical(self,c,r,p):
+        """c=coulumn, r= row, p=player"""
+        for i in range(4):
+            if not self.check_cell(c+i,r,p):
+                return False
+        return True
+
+    def check_diagonal_up(self,c,r,p):
+        """c=coulumn, r= row, p=player"""
+        for i in range(4):
+            if not self.check_cell(c+i,r+i,p):
+                return False
+        return True
+
+    def check_diagonal_down(self,c,r,p):
+        """c=coulumn, r= row, p=player"""
+        for i in range(4):
+            if not self.check_cell(c-i,r+i,p):
+                return False
+        return True
 
     def check_win(self,player):
         for c in range(1,7):
             for r in range(1,5):
-                if self.board[c][r] == player and self.board[c][r+1] == player and self.board[c][r+2] == player and self.board[c][r+3] == player:
+                if self.check_horizontal(c,r,player):
                     print(player + " Won!")
                     return True
                 if c < 4:
-                    if self.board[c][r] == player and self.board[c+1][r] == player and self.board[c+2][r] == player and self.board[c+3][r] == player:
+                    if self.check_vertical(c,r,player):
                         print(player + " Won!")
                         return True
-                    if self.board[c][r] == player and self.board[c+1][r+1] == player and self.board[c+2][r+2] == player and self.board[c+3][r+3] == player:
+                    if self.check_diagonal_up(c,r,player):
                         print(player + " Won!")
                         return True
                 if c > 3:
-                    if self.board[c][r] == player and self.board[c-1][r+1] == player and self.board[c-2][r+2] == player and self.board[c-3][r+3] == player:
+                    if self.check_diagonal_down(c,r,player):
                         print(player + " Won!")
                         return True
         return False
