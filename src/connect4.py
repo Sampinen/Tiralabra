@@ -21,17 +21,15 @@ class ConnectFour:
         1: {1: 1,2: 2,3: 3, 4: 4, 5: 3, 6: 2,7: 1}
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
-        self.running = False
-        self.ask()
 
     def print_board(self):
         output = ""
         for _,line in self.board.items():
-            output += "----------------\n"
+            output += "----------------------\n"
             for _,value in line.items():
                 output += "|" +str(value)
             output +="|\n"
-        output += "----------------"
+        output += "----------------------"
         print(output)
 
     def play(self,row: int,player):
