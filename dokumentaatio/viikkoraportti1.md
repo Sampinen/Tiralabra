@@ -2,9 +2,11 @@
 1. Mitä olen tehnyt tällä viikolla?
 
 Tein kakkoskohdassa mainitut asiat sekä katselin asiaan liittyen videoita Youtubesta ja kertasin miten min-max algortitmi toimii
+
 2. Miten ohjelma on edistynyt?
 
 Tein jonkinnäköisen käyttöliittymän. Peliä voi myös pelata, mutta se ei osaa tunnistaa vielä voittoja ja tekoäly pelaa täysin sattumanvaraisesti.
+
 3. Mitä opin tällä viikolla / tänään?
 
 Että sanakirjassa olevasta tuplesta ensimmäisen arvon ulosotto ei onnistu kätevästi
