@@ -36,7 +36,7 @@ class ConnectFour:
 
     def play(self,row: int,player):
         if row > 7 or row < 1:
-            return print("Valitse numero väliltä 1 ja 7")
+            print("Valitse numero väliltä 1 ja 7")
         if self.played[row] <6:
             self.board[self.played[row]+1][row] = str(player)
             self.played[row] +=1
@@ -57,8 +57,8 @@ class ConnectFour:
 
 
     def check_win(self,player):
-        for c in range(1,6):
-            for r in range(1,4):
+        for c in range(1,7):
+            for r in range(1,5):
                 if self.board[c][r] == player and self.board[c][r+1] == player and self.board[c][r+2] == player and self.board[c][r+3] == player:
                     print(player + " Won!")
                     return True
@@ -73,5 +73,4 @@ class ConnectFour:
                     if self.board[c][r] == player and self.board[c-1][r+1] == player and self.board[c-2][r+2] == player and self.board[c-3][r+3] == player:
                         print(player + " Won!")
                         return True
-
         return False
