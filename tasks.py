@@ -1,7 +1,7 @@
+#pylint: skip-file
 from invoke import task
 from subprocess import call
 from sys import platform
-#pylint: skip-file
 
 # Taskit kopioitu Ohjelmistotekniikka kurssilla tekemästäni tedostosta
 @task
@@ -20,11 +20,6 @@ def coverage_report(ctx):
     ctx.run("coverage html", pty=True)
     if platform != "win32":
         call(("xdg-open", "htmlcov/index.html"))
-
-@task
-def format(ctx):
-    """Redefines pylint format"""
-    ctx.run("autopep8 --in-place --recursive src", pty=True)
 
 @task
 def lint(ctx):
