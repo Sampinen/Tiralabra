@@ -15,15 +15,54 @@ class TestConnect4(unittest.TestCase):
     def test_check_win_returns_false_if_the_board_is_empty(self):
         self.assertEqual(self.game.check_win("X"), False)
 
-    def test_check_horizontal_returns_false_if_the_board_is_empty(self):
-        self.assertEqual(self.game.check_horizontal(1,1,"X"), False)
-
-    def test_check_horizontal_returns_true_with_hortizontal_win(self):
+    def test_check_win_returns_true_with_hortizontal_win(self):
         self.game.play(1,"X")
         self.game.play(2, "X")
         self.game.play(3,"X")
         self.game.play(4,"X")
-        self.assertEqual(self.game.check_horizontal(1,1,"X"), True)
+        self.assertEqual(self.game.check_win("X"), True)
+        self.assertEqual(self.game.check_horizontal(1,1,"X"),True)
 
-    def test_check_vertical_returns_false_when_board_is_empty(self):
-        self.assertEqual(self.game.check_vertical(1,1,"X"),False)
+    def test_check_win_returns_true_with_vertical_win(self):
+        self.game.play(1,"X")
+        self.game.play(1,"X")
+        self.game.play(1,"X")
+        self.game.play(1,"X")
+        self.assertEqual(self.game.check_win("X"),True)
+        self.assertEqual(self.game.check_vertical(1,1,"X"),True)
+
+    def test_check_win_returns_true_with_diagnoal_up_win(self):
+        self.game.play(1,"X")
+
+        self.game.play(2,"Y")
+        self.game.play(2,"X")
+
+        self.game.play(3,"Z")
+        self.game.play(3,"Z")
+        self.game.play(3,"X")
+
+        self.game.play(4,"Å")
+        self.game.play(4,"Å")
+        self.game.play(4,"Å")
+        self.game.play(4,"X")
+
+        self.assertEqual(self.game.check_win("X"),True)
+        self.assertEqual(self.game.check_diagonal_up(1,1,"X"),True)
+
+    def test_check_win_returns_true_with_diagnoal_down_win(self):
+        self.game.play(1,"Å")
+        self.game.play(1,"Å")
+        self.game.play(1,"Å")
+        self.game.play(1,"X")
+
+        self.game.play(2,"Z")
+        self.game.play(2,"Z")
+        self.game.play(2,"X")
+
+        self.game.play(3,"Y")
+        self.game.play(3,"X")
+
+        self.game.play(4,"X")
+
+        self.assertEqual(self.game.check_win("X"),True)
+        self.assertEqual(self.game.check_diagonal_down(4,1,"X"),True)
