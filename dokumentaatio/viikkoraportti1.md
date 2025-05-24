@@ -18,3 +18,5 @@ Ensimmäinen ajatus oli laittaa kuka on pelannut ruutuun ja painon, jonka avulla
 5. Mitä teen seuraavaksi?
 
 Tavan tarkastaa onko pelaaja voittanut, sekä jonkinnäköinen algoritmi tekoälylle tai vähintään aloitus.
+
+Aikaa käytetty n. 15 tuntia
