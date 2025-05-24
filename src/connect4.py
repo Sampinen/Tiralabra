@@ -54,7 +54,7 @@ class ConnectFour:
             win1 = self.check_win(self.player1)
             if win1:
                 return False
-            self.play(random.randint(1,7),self.player2)
+            self.check_weights(self.player2)
             win2 =self.check_win(self.player2)
             if win2:
                 return False
@@ -126,3 +126,19 @@ class ConnectFour:
                         print(player + " Won!")
                         return True
         return False
+
+    def check_weights(self,player):
+        weight = -99999
+        row = 0
+        for r in range(1,8):
+            if self.played[r] == 6:
+                pass
+            else:
+                column = self.played[r]+1
+                if self.weights[column][r] > weight:
+                    weight = self.weights[column][r]
+                    row = r
+        if row == 0:
+            print("Kaikki ruudut täynnä")
+        else:
+            self.play(row,player)
