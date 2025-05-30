@@ -126,6 +126,34 @@ class ConnectFour:
                         print(player + " Won!")
                         return True
         return False
+ 
+    def check_score_cell(self,player,row,column):
+        score = -9999
+        minr = max(row-3,1)
+        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                                                             
+        minc = max(column-3,1)
+        maxc = min(column+1,7)
+        for c in range(minc,maxc):
+            for r in range(minr,maxr):
+                horizontal = self.check_horizontal(c,r,player)
+                if horizontal == 3:
+                    return 3
+                if c < 4:
+                    vertical = self.check_vertical(c,r,player)
+                    if vertical ==3:
+                        return 3
+                    diagonalu = self.check_diagonal_up(c,r,player)
+                    if diagonalu==3:
+                        return 3
+                    score =  max(vertical,diagonalu,score)
+                if c > 3:
+                    diagonald = self.check_diagonal_down(c,r,player)
+                    if diagonald==3:
+                        return 3
+                    score = max(score,diagonald)
+                score = max(score,horizontal)
+        return score
+        
 
     def check_weights(self,player):
         weight = -99999
@@ -138,6 +166,25 @@ class ConnectFour:
                 if self.weights[column][r] > weight:
                     weight = self.weights[column][r]
                     row = r
+        if row == 0:
+            print("Kaikki ruudut täynnä")
+        else:
+            self.play(row,player)
+
+    def check_scores(self,player):
+        score = -99999
+        row = 0
+        for r in range(1,8):
+            if self.played[r] == 6:
+                pass
+            else:
+                column = self.played[r]+1
+                cell_score = self.check_score_cell(column,r,player)
+                if cell_score > score:
+                    row =r
+                    score = cell_score
+                if score ==3:
+                    return
         if row == 0:
             print("Kaikki ruudut täynnä")
         else:
