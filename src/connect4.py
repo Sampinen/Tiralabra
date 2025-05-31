@@ -54,7 +54,7 @@ class ConnectFour:
             win1 = self.check_win(self.player1)
             if win1:
                 return False
-            self.check_weights(self.player2)
+            self.check_scores(self.player2)
             win2 =self.check_win(self.player2)
             if win2:
                 return False
@@ -65,7 +65,7 @@ class ConnectFour:
             return 1
         if self.board[c][r] == "  ":
             return 0
-        return -1
+        return -10
 
 
     def check_horizontal(self,c,r,p):
@@ -127,33 +127,33 @@ class ConnectFour:
                         return True
         return False
  
-    def check_score_cell(self,player,row,column):
+    def check_score_cell(self,column,row,player):
         score = -9999
         minr = max(row-3,1)
-        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                                                             
+        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                               
         minc = max(column-3,1)
-        maxc = min(column+1,7)
+        maxc = min(column+1,4)
         for c in range(minc,maxc):
-            for r in range(minr,maxr):
-                horizontal = self.check_horizontal(c,r,player)
-                if horizontal == 3:
-                    return 3
-                if c < 4:
-                    vertical = self.check_vertical(c,r,player)
-                    if vertical ==3:
-                        return 3
-                    diagonalu = self.check_diagonal_up(c,r,player)
-                    if diagonalu==3:
-                        return 3
-                    score =  max(vertical,diagonalu,score)
-                if c > 3:
-                    diagonald = self.check_diagonal_down(c,r,player)
-                    if diagonald==3:
-                        return 3
-                    score = max(score,diagonald)
-                score = max(score,horizontal)
+            vertical = self.check_vertical(c,row,player)
+            score = max(vertical,score)
+        for r in range(minr,maxr):
+            horizontal = self.check_horizontal(column,r,player)
+            score =max(horizontal,score)
+        for i in range(0,4):
+            if column+i in range(1,4) and row+i in range(1,5):
+                diagonalu= self.check_diagonal_up(column+i,row+i,player)
+                score = max(diagonalu,score)
+            if column-i in range(4,7) and row+i in range(1,5):
+                diagonald = self.check_diagonal_down(column-i,row+i,player)
+                score = max(diagonald,score)
+            if i>0:
+                if column-i in range(1,4) and row-i in range(1,5):
+                    diagonalu= self.check_diagonal_up(column-i,row-i,player)
+                    score = max(diagonalu,score)
+                if column+i in range(4,7) and row-i in range(1,5):
+                    diagonald = self.check_diagonal_down(column+i,row-i,player)
+                    score = max(diagonald,score)
         return score
-        
 
     def check_weights(self,player):
         weight = -99999
@@ -175,7 +175,7 @@ class ConnectFour:
         score = -99999
         row = 0
         for r in range(1,8):
-            if self.played[r] == 6:
+            if self.played[r] > 5:
                 pass
             else:
                 column = self.played[r]+1
@@ -184,8 +184,10 @@ class ConnectFour:
                     row =r
                     score = cell_score
                 if score ==3:
+                    self.play(row,player)
                     return
         if row == 0:
             print("Kaikki ruudut täynnä")
         else:
+            print(score,row)
             self.play(row,player)
