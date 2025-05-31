@@ -126,11 +126,11 @@ class ConnectFour:
                         print(player + " Won!")
                         return True
         return False
- 
+
     def check_score_cell(self,column,row,player):
         score = -9999
         minr = max(row-3,1)
-        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                               
+        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                   
         minc = max(column-3,1)
         maxc = min(column+1,4)
         for c in range(minc,maxc):
