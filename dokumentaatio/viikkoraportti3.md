@@ -16,6 +16,10 @@ Hetki piti miettiä miten pisteet tulisi laskea
 
 5. Mitä teen seuraavaksi?
 
-Edistän min-max algoritmia
+Edistän min-max algoritmia. Teen lisää testejä.
+
+6. Laajojen kielimallien käyttö?
+
+En käyttänyt laajoja kielimalleja apuna
 
 Käytetty aika n. 12 tuntia
