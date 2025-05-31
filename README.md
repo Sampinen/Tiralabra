@@ -2,11 +2,14 @@
 [Määrittelydokumentti](https://github.com/Sampinen/Tiralabra/blob/main/dokumentaatio/maarittelydokumentti.md)
 ## Releaset
 
+[viikon 3 release](https://github.com/Sampinen/Tiralabra/releases/tag/viikko3)
+
 [viikon 2 release](https://github.com/Sampinen/Tiralabra/releases/tag/viikko2)
 
 [viikon 1 release](https://github.com/Sampinen/Tiralabra/releases/tag/viikko1)
 
 ## Viikkoraportit
+[viikon 3 raportti](https://github.com/Sampinen/Tiralabra/blob/main/dokumentaatio/viikkoraportti3.md)
 
 [viikon 2 raportti](https://github.com/Sampinen/Tiralabra/blob/main/dokumentaatio/viikkoraportti2.md)
 
