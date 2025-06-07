@@ -4,6 +4,8 @@ class ConnectFour:
     def __init__(self):
         self.player1= ""
         self.player2 = "P2"
+        self.columncount = 6
+        self.rowcount =7
         self.board = {
         6: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
         5: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
@@ -12,15 +14,10 @@ class ConnectFour:
         2: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
         1: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "}
         }
-        self.weights = {
-        6: {1: 1,2: 2,3: 3, 4: 4, 5: 3, 6: 2,7: 1},
-        5: {1: 2,2: 3,3: 4, 4: 5, 5: 4, 6: 3,7: 2},
-        4: {1: 3,2: 4,3: 5, 4: 6, 5: 5, 6: 4,7: 3},
-        3: {1: 3,2: 4,3: 5, 4: 6, 5: 3, 6: 4,7: 3},
-        2: {1: 2,2: 3,3: 4, 4: 5, 5: 4, 6: 3,7: 2},
-        1: {1: 1,2: 2,3: 3, 4: 4, 5: 3, 6: 2,7: 1}
-        }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
+
+    def roworder(self):
+        return [4,3,5,2,6,1,7]
 
     def print_board(self):
         output = ""
@@ -67,109 +64,96 @@ class ConnectFour:
             return 0
         return -10
 
+    def is_valid_location(self,c,r):
+        return c in range(1,self.columncount+1) and r in range(1,self.rowcount+1)
 
-    def check_horizontal(self,c,r,p):
-        """c=coulumn, r= row, p=player"""
+    def check_win_horizontal(self,c,r,p,board):
         score = 0
-        for i in range(4):
-            cell = self.check_cell(c,r+i,p)
-            if cell == -1:
-                return -1
-            score += cell
-        return score
-
-    def check_vertical(self,c,r,p):
-        """c=coulumn, r= row, p=player"""
-        score = 0
-        for i in range(4):
-            cell = self.check_cell(c+i,r,p)
-            if cell == -1:
-                return -1
-            score += cell
-        return score
-
-    def check_diagonal_up(self,c,r,p):
-        """c=coulumn, r= row, p=player"""
-        score = 0
-        for i in range(4):
-            cell = self.check_cell(c+i,r+i,p)
-            if cell == -1:
-                return -1
-            score += cell
-        return score
-
-    def check_diagonal_down(self,c,r,p):
-        """c=coulumn, r= row, p=player"""
-        score = 0
-        for i in range(4):
-            cell = self.check_cell(c-i,r+i,p)
-            if cell == -1:
-                return -1
-            score += cell
-        return score
-
-    def check_win(self,player):
-        for c in range(1,7):
-            for r in range(1,5):
-                if self.check_horizontal(c,r,player) ==4:
-                    print(player + " Won!")
-                    return True
-                if c < 4:
-                    if self.check_vertical(c,r,player) ==4:
-                        print(player + " Won!")
-                        return True
-                    if self.check_diagonal_up(c,r,player)==4:
-                        print(player + " Won!")
-                        return True
-                if c > 3:
-                    if self.check_diagonal_down(c,r,player)==4:
-                        print(player + " Won!")
-                        return True
-        return False
-
-    def check_score_cell(self,column,row,player):
-        score = -9999
-        minr = max(row-3,1)
-        maxr = min(row+1,5)                                                                                                                                                                                                                                                                                                   
-        minc = max(column-3,1)
-        maxc = min(column+1,4)
-        for c in range(minc,maxc):
-            vertical = self.check_vertical(c,row,player)
-            score = max(vertical,score)
-        for r in range(minr,maxr):
-            horizontal = self.check_horizontal(column,r,player)
-            score =max(horizontal,score)
-        for i in range(0,4):
-            if column+i in range(1,4) and row+i in range(1,5):
-                diagonalu= self.check_diagonal_up(column+i,row+i,player)
-                score = max(diagonalu,score)
-            if column-i in range(4,7) and row+i in range(1,5):
-                diagonald = self.check_diagonal_down(column-i,row+i,player)
-                score = max(diagonald,score)
-            if i>0:
-                if column-i in range(1,4) and row-i in range(1,5):
-                    diagonalu= self.check_diagonal_up(column-i,row-i,player)
-                    score = max(diagonalu,score)
-                if column+i in range(4,7) and row-i in range(1,5):
-                    diagonald = self.check_diagonal_down(column+i,row-i,player)
-                    score = max(diagonald,score)
-        return score
-
-    def check_weights(self,player):
-        weight = -99999
-        row = 0
-        for r in range(1,8):
-            if self.played[r] == 6:
-                pass
+        i = 1
+        while i > 0:
+            if self.is_valid_location(c,r+i):
+                if board[c][r+i] == p:
+                    score +=1
+                    i += 1
+                else:
+                    i = -1
             else:
-                column = self.played[r]+1
-                if self.weights[column][r] > weight:
-                    weight = self.weights[column][r]
-                    row = r
-        if row == 0:
-            print("Kaikki ruudut täynnä")
-        else:
-            self.play(row,player)
+                i = -1
+        while i < 0:
+            if self.is_valid_location(c,r-i):
+                if board[c][r-i] == p:
+                    score += 1
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+        return score
+
+    def check_win_vertical(self,c,r,p,board):
+        score = 0
+        i = -1
+        while i < 0:
+            if self.is_valid_location(c-i,r):
+                if board[c-i][r] == p:
+                    score += 1
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+        return score
+    
+    def check_win_diagonal_down(self,c,r,p,board):
+        score = 0
+        i = 1
+        while i > 0:
+            if self.is_valid_location(c-i,r+i):
+                if board[c-i][r+i] == p:
+                    score +=1
+                    i += 1
+                else:
+                    i = -1
+            else:
+                i = -1
+        while i < 0:
+            if self.is_valid_location(c-i,r+i):
+                if board[c-i][r+i] == p:
+                    score += 1
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+            return score
+
+    def check_win_diagonal_up(self,c,r,p,board):
+        score = 0
+        i = 1
+        while i > 0:
+            if self.is_valid_location(c+i,r+i):
+                if board[c+i][r+i] == p:
+                    score +=1
+                    i += 1
+                else:
+                    i = -1
+            else:
+                i = -1
+        while i < 0:
+            if self.is_valid_location(c+i,r+i):
+                if board[c+i][r+i] == p:
+                    score += 1
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+            return score
+    def check_win_cell(self,c,r,p,board):
+        self.check_win_diagonal_down(c,r,p,board)
+        self.check_win_diagonal_up(c,r,p,board)
+        self.check_win_horizontal(c,r,p,board)
+        self.check_win_vertical(c,r,p,board)
 
     def check_scores(self,player):
         score = -99999
