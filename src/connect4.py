@@ -15,9 +15,7 @@ class ConnectFour:
         1: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "}
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
-
-    def roworder(self):
-        return [4,3,5,2,6,1,7]
+        self.roworder = [4,3,5,2,6,1,7]
 
     def print_board(self):
         output = ""
@@ -36,23 +34,23 @@ class ConnectFour:
             column = self.played[row]+1
             self.board[column][row] = str(player)
             self.played[row] +=1
-            self.weights[self.played[row]][row] = 0
-            if column -1 in self.weights:
-                self.weights[column-1][row] += 2
-
         self.print_board()
-            
 
     def ask(self,player_name = None, pick_row = None):
         self.player1 = str(input("Pick a symbol: "))[0]+" " if not player_name else player_name[0]
         while True:
             row = int(input("Pick a row (1-7): ")) if not pick_row else pick_row
+            column = self.played[row]+1
             self.play(row, self.player1)
-            win1 = self.check_win(self.player1)
+            win1 = self.check_win_cell(column,row,self.player1,self.board)
+            print(win1)
             if win1:
                 return False
-            self.check_scores(self.player2)
-            win2 =self.check_win(self.player2)
+            row2 = random.randint(1,7)
+            column2 = self.played[row2]+1
+            self.play(row2,self.player2)
+            win2 = self.check_win_cell(column2,row2,self.player2,self.board)
+            print(win2)
             if win2:
                 return False
 
@@ -69,8 +67,8 @@ class ConnectFour:
 
     def check_win_horizontal(self,c,r,p,board):
         score = 0
-        i = 1
-        while i > 0:
+        i = 0
+        while i >= 0:
             if self.is_valid_location(c,r+i):
                 if board[c][r+i] == p:
                     score +=1
@@ -80,34 +78,35 @@ class ConnectFour:
             else:
                 i = -1
         while i < 0:
-            if self.is_valid_location(c,r-i):
-                if board[c][r-i] == p:
+            if self.is_valid_location(c,r+i):
+                if board[c][r+i] == p:
                     score += 1
                     i -= 1
                 else:
                     i = 0
             else:
                 i = 0
-        return score
+        return score >=4
+        
 
     def check_win_vertical(self,c,r,p,board):
         score = 0
-        i = -1
-        while i < 0:
-            if self.is_valid_location(c-i,r):
-                if board[c-i][r] == p:
+        i = 0
+        while i <= 0:
+            if self.is_valid_location(c+i,r):
+                if board[c+i][r] == p:
                     score += 1
                     i -= 1
                 else:
-                    i = 0
+                    i = 9999
             else:
-                i = 0
-        return score
+                i = 9999
+        return score >=4
     
     def check_win_diagonal_down(self,c,r,p,board):
         score = 0
-        i = 1
-        while i > 0:
+        i = 0
+        while i >= 0:
             if self.is_valid_location(c-i,r+i):
                 if board[c-i][r+i] == p:
                     score +=1
@@ -122,15 +121,15 @@ class ConnectFour:
                     score += 1
                     i -= 1
                 else:
-                    i = 0
+                    i = 9999
             else:
-                i = 0
-            return score
+                i = 9999
+        return score >=4
 
     def check_win_diagonal_up(self,c,r,p,board):
         score = 0
-        i = 1
-        while i > 0:
+        i = 0
+        while i >= 0:
             if self.is_valid_location(c+i,r+i):
                 if board[c+i][r+i] == p:
                     score +=1
@@ -148,30 +147,14 @@ class ConnectFour:
                     i = 0
             else:
                 i = 0
-            return score
+            return score >=4
     def check_win_cell(self,c,r,p,board):
-        self.check_win_diagonal_down(c,r,p,board)
-        self.check_win_diagonal_up(c,r,p,board)
-        self.check_win_horizontal(c,r,p,board)
-        self.check_win_vertical(c,r,p,board)
+        score1 = self.check_win_diagonal_down(c,r,p,board)
+        score2 = self.check_win_diagonal_up(c,r,p,board)
+        score3 = self.check_win_horizontal(c,r,p,board)
+        score4 = self.check_win_vertical(c,r,p,board)
+        return score1 or score2 or score3 or score4
 
-    def check_scores(self,player):
-        score = -99999
-        row = 0
-        for r in range(1,8):
-            if self.played[r] > 5:
-                pass
-            else:
-                column = self.played[r]+1
-                cell_score = self.check_score_cell(column,r,player)
-                if cell_score > score:
-                    row =r
-                    score = cell_score
-                if score ==3:
-                    self.play(row,player)
-                    return
-        if row == 0:
-            print("Kaikki ruudut täynnä")
-        else:
-            print(score,row)
-            self.play(row,player)
+    def check_win_move(self,score):
+        return 
+

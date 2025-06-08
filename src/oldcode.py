@@ -103,3 +103,37 @@ def check_weights(self,player):
         print("Kaikki ruudut täynnä")
     else:
         self.play(row,player)
+
+def play(self,row: int,player):
+    if row > 7 or row < 1:
+        print("Valitse numero väliltä 1 ja 7")
+    if self.played[row] <6:
+        column = self.played[row]+1
+        self.board[column][row] = str(player)
+        self.played[row] +=1
+        self.weights[self.played[row]][row] = 0
+        if column -1 in self.weights:
+            self.weights[column-1][row] += 2
+
+    self.print_board()
+
+    def check_scores(self,player):
+        score = -99999
+        row = 0
+        for r in range(1,8):
+            if self.played[r] > 5:
+                pass
+            else:
+                column = self.played[r]+1
+                cell_score = self.check_score_cell(column,r,player)
+                if cell_score > score:
+                    row =r
+                    score = cell_score
+                if score ==3:
+                    self.play(row,player)
+                    return
+        if row == 0:
+            print("Kaikki ruudut täynnä")
+        else:
+            print(score,row)
+            self.play(row,player)
