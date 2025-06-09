@@ -1,5 +1,5 @@
 import random
-
+import copy
 class ConnectFour:
     def __init__(self):
         self.player1= ""
@@ -16,6 +16,8 @@ class ConnectFour:
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
         self.roworder = [4,3,5,2,6,1,7]
+        self.board_tree = {}
+
 
     def print_board(self):
         output = ""
@@ -27,12 +29,12 @@ class ConnectFour:
         output += "----------------------"
         print(output)
 
-    def play(self,row: int,player):
+    def play(self,row: int,player,board):
         if row > 7 or row < 1:
             print("Valitse numero väliltä 1 ja 7")
         if self.played[row] <6:
             column = self.played[row]+1
-            self.board[column][row] = str(player)
+            board[column][row] = str(player)
             self.played[row] +=1
         self.print_board()
 
@@ -41,14 +43,14 @@ class ConnectFour:
         while True:
             row = int(input("Pick a row (1-7): ")) if not pick_row else pick_row
             column = self.played[row]+1
-            self.play(row, self.player1)
+            self.play(row, self.player1,self.board)
             win1 = self.check_win_cell(column,row,self.player1,self.board)
             print(win1)
             if win1:
                 return False
             row2 = random.randint(1,7)
             column2 = self.played[row2]+1
-            self.play(row2,self.player2)
+            self.play(row2,self.player2,self.board)
             win2 = self.check_win_cell(column2,row2,self.player2,self.board)
             print(win2)
             if win2:
@@ -60,7 +62,7 @@ class ConnectFour:
             return 1
         if self.board[c][r] == "  ":
             return 0
-        return -10
+        return -1
 
     def is_valid_location(self,c,r):
         return c in range(1,self.columncount+1) and r in range(1,self.rowcount+1)
@@ -87,7 +89,7 @@ class ConnectFour:
             else:
                 i = 0
         return score >=4
-        
+
 
     def check_win_vertical(self,c,r,p,board):
         score = 0
@@ -102,7 +104,7 @@ class ConnectFour:
             else:
                 i = 9999
         return score >=4
-    
+
     def check_win_diagonal_down(self,c,r,p,board):
         score = 0
         i = 0
@@ -155,6 +157,23 @@ class ConnectFour:
         score4 = self.check_win_vertical(c,r,p,board)
         return score1 or score2 or score3 or score4
 
-    def check_win_move(self,score):
-        return 
+    def minmax(self,p,board,played):
+        for r in range(1,8):
+            newboard = copy.deepcopy(board)
+            newplayed = copy.deepcopy(played)
+            if played[r] >= self.columncount:
+                pass
+            else:
+                c = played[r]+1
+                self.play(r,p,newboard)
+            c = played[r]
+            if self.check_win_cell(c,r,p,newboard):
+                pass
+            else:
+                if p == self.player1:
+                    other_player = self.player2
+                else:
+                    other_player = self.player1
+                self.minmax(other_player,newboard,newplayed)
+
 

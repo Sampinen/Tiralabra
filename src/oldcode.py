@@ -137,3 +137,144 @@ def play(self,row: int,player):
         else:
             print(score,row)
             self.play(row,player)
+
+
+
+def check_scores2(self,p,board):
+    score = -99999999
+    newroworder = []
+    for r in self.roworder:
+        if self.played[r] >= self.columncount:
+            print("remove "+str(r))
+            self.roworder.remove(r)
+        else:
+            c = self.played[r]+1
+            score1 = self.check_score_diagonal_down(c,r,p,board)
+            score2 = self.check_score_diagonal_up(c,r,p,board)
+            score3 = self.check_score_horizontal(c,r,p,board)
+            score4 = self.check_score_vertical(c,r,p,board)
+            scoresum = score1+score2+score3+score4
+            newroworder.append((r,scoresum))
+        newroworder.sort(key=lambda x:x[1],reverse=True)
+    print(newroworder)
+
+    def check_score_horizontal(self,c,r,p,board):
+        score = 0
+        i = 1
+        emptyorp = 0 #empty or player
+        while i >= 1:
+            if self.is_valid_location(c,r+i):
+                if board[c][r+i] == p:
+                    score +=1
+                    emptyorp += 1
+                    i += 1
+                elif board[c][r+i] != "  ":
+                    i = -1
+                else:
+                    i += 1
+                    emptyorp +=1
+            else:
+                i = -1
+        while i < 0:
+            if self.is_valid_location(c,r+i):
+                if board[c][r+i] == p:
+                    score += 1
+                    i -= 1
+                elif board[c][r+i] == "  ":
+                    i -=1
+                elif board[c][r+i] != "  " and emptyorp <3:
+                    #It is no longer possible to get horizontal win
+                    score = -1
+                    i = 0
+                else:
+                    i = 0
+            else:
+                i = 0
+            return self.return_points(score)
+
+
+    def check_score_vertical(self,c,r,p,board):
+        score = 0
+        i = -1
+        while i < 0:
+            if self.is_valid_location(c+i,r):
+                if board[c+i][r] == p:
+                    score += 1
+                    i -= 1
+                elif board[c+i][r] == "  ":
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+        return self.return_points(score)
+
+    def check_score_diagonal_down(self,c,r,p,board):
+        score = 0
+        i = 1
+        emptyorp = 0
+        while i >= 1:
+            if self.is_valid_location(c-i,r+i):
+                if board[c-i][r+i] == p:
+                    score +=1
+                    i += 1
+                    emptyorp +=1
+                elif board[c-i][r+i]==p:
+                    i +=1
+                else:
+                    i = -1
+            else:
+                i = -1
+        while i < 0:
+            if self.is_valid_location(c-i,r+i):
+                if board[c-i][r+i] == p:
+                    score += 1
+                    i -= 1
+                elif board[c-i][r+i] == "  ":
+                    i -= 1
+                elif emptyorp <3:
+                    score = -1
+                    i = 0
+                else:
+                    i = 0
+            else:
+                i = 0
+        return self.return_points(score)
+
+    def check_score_diagonal_up(self,c,r,p,board):
+        score = 0
+        i = 0
+        emptyorp = 0
+        while i in range(1,4):
+            if self.is_valid_location(c+i,r+i):
+                if board[c+i][r+i] == p:
+                    emptyorp += 1
+                    score +=1
+                    i += 1
+                elif board[c+i][r+i] == "  ":
+                    emptyorp +=1
+                    i += 1
+                else:
+                    i = 0
+            else:
+                i = -1
+        while i in range(-4,-1):
+            if self.is_valid_location(c+i,r+i):
+                if board[c+i][r+i] == p:
+                    score += 1
+                    emptyorp +=1
+                    i -= 1
+                else:
+                    i = 0
+            else:
+                i = 0
+        return self.return_points(score)
+
+
+    def return_points(self,score):
+        if score ==2:
+            return 10
+        if score == 3:
+            return 99999
+        else:
+            return 0
