@@ -39,7 +39,7 @@ class ConnectFour:
         return board
 
     def ask(self):
-        self.player1 = str(input("Pick a symbol: "))[0]
+        self.player1 = str(input("Pick a symbol: "))[0] + " "
         while True:
             column = int(input("Pick a column (1-7): "))
             row = self.played[column]+1
@@ -48,11 +48,10 @@ class ConnectFour:
             self.print_board()
             if win1:
                 return False
-            column2 = random.randint(1,7)
-            row2 = self.played[column2]+1
-            print(self.minmax(self.board,self.played,3,False))
-            self.board = self.play(row2,self.player2,self.board,self.played)
-            win2 = self.check_win_cell(column2,row2,self.player2,self.board)
+            best_column = self.minmax(self.board,self.played,3,False)[0]
+            row2 = self.played[best_column]+1
+            self.board = self.play(best_column,self.player2,self.board,self.played)
+            win2 = self.check_win_cell(best_column,row2,self.player2,self.board)
             self.print_board()
             if win2:
                 return False
@@ -154,33 +153,47 @@ class ConnectFour:
 
     def minmax(self,board,played,depth,maxplayer):
         if depth == 0:
-            return 0
-        newplayed = copy.deepcopy(played)
+            return None,0
+        column = 4
         if maxplayer:
             value = -99999999
             for c in range(1,self.columncount+1):
-                if newplayed[c] >= self.rowcount:
+                if played[c] >= self.rowcount:
                     pass
                 else:
+                    newplayed = copy.deepcopy(played)
                     newboard = copy.deepcopy(board)
                     r = newplayed[c] +1
-                    self.play(r,self.player1,newboard,newplayed)
-                    if self.check_win_cell(c,r,self.player1,newboard):
-                        return 9999999
-                    new_value = self.minmax(newboard,newplayed,depth-1,False)
+                    self.play(c,self.player1,newboard,newplayed)
+                    if self.check_win_cell(r,c,self.player1,newboard):
+                        #print("-"*(3 - depth), "Player win found!")
+                        return column, 9999999
+                    #print("-"*(3 - depth), "Searching", c)
+                    new_value = self.minmax(newboard,newplayed,depth-1,False)[1]
                     if new_value > value:
                         value = new_value
-        else: #minplayer
+                        column = c
+            #print("-"*(3 - depth), value, column)
+            return column, value
+        else: #minplayer, AI
             value = 9999999
             for c in range(1,self.columncount+1):
-                if newplayed[c] >= self.columncount:
+                if played[c] >= self.columncount:
                     pass
                 else:
+                    newplayed = copy.deepcopy(played)
                     newboard = copy.deepcopy(board)
                     r = newplayed[c] +1
-                    self.play(r,self.player2,newboard,newplayed)
-                    if self.check_win_cell(r,c,self.player2,newboard):
-                        return -9999999
-                    value = min(value, self.minmax(newboard,newplayed,depth-1,True))
+                    self.play(c,self.player2,newboard,newplayed)
 
-        return 0
+                    if self.check_win_cell(r,c,self.player2,newboard):
+                        print(" "*(3 - depth), "AI win found")
+                        return column, -9999999
+                    print(" "*(3 - depth), "Searching", c)
+                    new_value = self.minmax(newboard,newplayed,depth-1,True)[1]
+                    if new_value < value:
+                        value = new_value
+                        column = c
+
+            print(" "*(3 - depth), value, column)
+            return column, value
