@@ -31,7 +31,7 @@ class ConnectFour:
 
     def play(self,column: int,player,board,played):
         if column > 7 or column < 1:
-            print("Valitse numero väliltä 1 ja 7")
+            print("Pick a number between 1 and 7")
         if played[column] <6:
             row = played[column]+1
             board[row][column] = str(player)
@@ -142,7 +142,7 @@ class ConnectFour:
                     i = 0
             else:
                 i = 0
-            return score >=4
+        return score >=4
 
     def check_win_cell(self,r,c,p,board):
         score1 = self.check_win_diagonal_down(r,c,p,board)
