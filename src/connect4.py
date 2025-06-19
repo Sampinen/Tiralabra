@@ -151,7 +151,7 @@ class ConnectFour:
         score4 = self.check_win_vertical(r,c,p,board)
         return score1 or score2 or score3 or score4
 
-    def minmax(self,board,played,depth,maxplayer):
+    def minmax(self,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
         if depth == 0:
             return None,0
         column = 4
@@ -169,10 +169,13 @@ class ConnectFour:
                         #print("-"*(3 - depth), "Player win found!")
                         return column, 9999999
                     #print("-"*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newboard,newplayed,depth-1,False)[1]
+                    new_value = self.minmax(newboard,newplayed,depth-1,False,alpha,beta)[1]
                     if new_value > value:
                         value = new_value
                         column = c
+                    alpha = max(alpha,value)
+                    if alpha >= beta:
+                        break
             #print("-"*(3 - depth), value, column)
             return column, value
         else: #minplayer, AI
@@ -190,10 +193,13 @@ class ConnectFour:
                         print(" "*(3 - depth), "AI win found")
                         return column, -9999999
                     print(" "*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newboard,newplayed,depth-1,True)[1]
+                    new_value = self.minmax(newboard,newplayed,depth-1,True,alpha,beta)[1]
                     if new_value < value:
                         value = new_value
                         column = c
+                    beta = min(beta,value)
+                    if beta <= alpha:
+                        break
 
             print(" "*(3 - depth), value, column)
             return column, value
