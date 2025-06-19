@@ -34,6 +34,10 @@ Min-max algoritmin aikavaatiums on O(n^m), jossa n on mahdolliset siirrot ja m p
 
 - https://www.scaler.com/topics/artificial-intelligence-tutorial/min-max-algorithm/
 
+- https://en.wikipedia.org/wiki/Alpha%E2%80%93beta_pruning
 
-Mahdollisesti myöhemmin lisää muita lähteitä. 
+- https://github.com/KeithGalli/Connect4-Python
+
+- https://en.wikipedia.org/wiki/Minimax
+
 
