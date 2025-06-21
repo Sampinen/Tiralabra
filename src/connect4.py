@@ -15,8 +15,7 @@ class ConnectFour:
         1: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "}
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0} #stores how many values have been played in each row
-        self.roworder = [4,3,5,2,6,1,7]
-        self.board_tree = {}
+        self.columnorder = [4,3,5,2,6,1,7] #Order in which the minmax algorithm goes through columns
 
 
     def print_board(self):
@@ -30,8 +29,7 @@ class ConnectFour:
         print(output)
 
     def play(self,column: int,player,board,played):
-        if column > 7 or column < 1:
-            print("Pick a number between 1 and 7")
+        """ Function that plays """
         if played[column] <6:
             row = played[column]+1
             board[row][column] = str(player)
@@ -39,6 +37,8 @@ class ConnectFour:
         return board
 
     def ask(self):
+        """This is the main game loop that runs the game"""
+        # Ask the player to pick a symbol that will be displayed on the screen
         self.player1 = str(input("Pick a symbol: "))[0] + " "
         while True:
             column = int(input("Pick a column (1-7): "))
@@ -49,9 +49,12 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
-            minmax = self.minmax(self.board,self.played,9,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
             best_column = minmax[0]
             print(minmax)
+            if best_column is None:
+                print("No empty cells left")
+                return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
             win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
@@ -152,19 +155,29 @@ class ConnectFour:
         return score >=4
 
     def check_win_cell(self,r,c,p,board):
+        """Checks a specific cell and whether or not it gives a victory"""
         score1 = self.check_win_diagonal_down(r,c,p,board)
         score2 = self.check_win_diagonal_up(r,c,p,board)
         score3 = self.check_win_horizontal(r,c,p,board)
         score4 = self.check_win_vertical(r,c,p,board)
         return score1 or score2 or score3 or score4
 
-    def minmax(self,board,played,depth,maxplayer,alpha=-99999999,beta=9999999,columnorder=[4,3,5,2,6,1,7]):
+    def get_valid_columns(self,played,columnorder):
+        for c in columnorder:
+            if played[c] >=self.rowcount:
+                columnorder.remove(c)
+
+    def minmax(self,columnorder,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
+        newcolumnorder = copy.deepcopy(columnorder)
+        self.get_valid_columns(played,newcolumnorder)
         if depth == 0:
-            return columnorder[0],0
+            return newcolumnorder[0],0
+        if len(newcolumnorder) == 0:
+            return None,0
         column = 4
-        if maxplayer:
+        if maxplayer: # Human player
             value = -99999999
-            for c in range(1,self.columncount+1):
+            for c in newcolumnorder:
                 if played[c] >= self.rowcount:
                     pass
                 else:
@@ -176,7 +189,7 @@ class ConnectFour:
                         #print("-"*(3 - depth), "Player win found!")
                         return c, 9999999
                     #print("-"*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newboard,newplayed,depth-1,False,alpha,beta)[1]
+                    new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                     if new_value > value:
                         value = new_value
                         column = c
@@ -187,7 +200,7 @@ class ConnectFour:
             return column, value
         else: #minplayer, AI
             value = 9999999
-            for c in self.roworder:
+            for c in newcolumnorder:
                 if played[c] >= self.columncount:
                     pass
                 else:
@@ -200,7 +213,7 @@ class ConnectFour:
                         #print(" "*(3 - depth), "AI win found")
                         return c, -9999999
                     #print(" "*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newboard,newplayed,depth-1,True,alpha,beta)[1]
+                    new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                     if new_value < value:
                         value = new_value
                         column = c
