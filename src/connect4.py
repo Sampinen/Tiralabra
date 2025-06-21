@@ -178,48 +178,42 @@ class ConnectFour:
         if maxplayer: # Human player
             value = -99999999
             for c in newcolumnorder:
-                if played[c] >= self.rowcount:
-                    pass
-                else:
-                    newplayed = copy.deepcopy(played)
-                    newboard = copy.deepcopy(board)
-                    r = newplayed[c] +1
-                    self.play(c,self.player1,newboard,newplayed)
-                    if self.check_win_cell(r,c,self.player1,newboard):
-                        #print("-"*(3 - depth), "Player win found!")
-                        return c, 9999999
-                    #print("-"*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
-                    if new_value > value:
-                        value = new_value
-                        column = c
-                    alpha = max(alpha,value)
-                    if alpha >= beta:
-                        break
+                newplayed = copy.deepcopy(played)
+                newboard = copy.deepcopy(board)
+                r = newplayed[c] +1
+                self.play(c,self.player1,newboard,newplayed)
+                if self.check_win_cell(r,c,self.player1,newboard):
+                    #print("-"*(3 - depth), "Player win found!")
+                    return c, 9999999
+                #print("-"*(3 - depth), "Searching", c)
+                new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
+                if new_value > value:
+                    value = new_value
+                    column = c
+                alpha = max(alpha,value)
+                if alpha >= beta:
+                    break
             #print("-"*(3 - depth), value, column)
             return column, value
         else: #minplayer, AI
             value = 9999999
             for c in newcolumnorder:
-                if played[c] >= self.columncount:
-                    pass
-                else:
-                    newplayed = copy.deepcopy(played)
-                    newboard = copy.deepcopy(board)
-                    r = newplayed[c] +1
-                    self.play(c,self.player2,newboard,newplayed)
+                newplayed = copy.deepcopy(played)
+                newboard = copy.deepcopy(board)
+                r = newplayed[c] +1
+                self.play(c,self.player2,newboard,newplayed)
 
-                    if self.check_win_cell(r,c,self.player2,newboard):
-                        #print(" "*(3 - depth), "AI win found")
-                        return c, -9999999
-                    #print(" "*(3 - depth), "Searching", c)
-                    new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
-                    if new_value < value:
-                        value = new_value
-                        column = c
-                    beta = min(beta,value)
-                    if alpha >= beta:
-                        break
+                if self.check_win_cell(r,c,self.player2,newboard):
+                    #print(" "*(3 - depth), "AI win found")
+                    return c, -9999999
+                #print(" "*(3 - depth), "Searching", c)
+                new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
+                if new_value < value:
+                    value = new_value
+                    column = c
+                beta = min(beta,value)
+                if alpha >= beta:
+                    break
 
             #print(" "*(3 - depth), value, column)
             return column, value
