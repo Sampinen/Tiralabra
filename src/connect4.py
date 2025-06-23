@@ -49,7 +49,7 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
-            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,1,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -171,7 +171,7 @@ class ConnectFour:
         newcolumnorder = copy.deepcopy(columnorder)
         self.get_valid_columns(played,newcolumnorder)
         if depth == 0:
-            return newcolumnorder[0],0
+            return None,0
         if len(newcolumnorder) == 0:
             return None,0
         column = 4
