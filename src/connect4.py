@@ -165,7 +165,7 @@ class ConnectFour:
     def get_valid_columns(self,played,columnorder):
         for i in range(len(columnorder)-1,-1,-1):
             if played[columnorder[i]] >=self.rowcount:
-                columnorder.remove(i)
+                columnorder.pop(i)
 
     def minmax(self,columnorder,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
         newcolumnorder = copy.deepcopy(columnorder)
