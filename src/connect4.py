@@ -163,9 +163,9 @@ class ConnectFour:
         return score1 or score2 or score3 or score4
 
     def get_valid_columns(self,played,columnorder):
-        for c in columnorder:
-            if played[c] >=self.rowcount:
-                columnorder.remove(c)
+        for i in range(len(columnorder)-1,-1,-1):
+            if played[columnorder[i]] >=self.rowcount:
+                columnorder.remove(columnorder[i])
 
     def minmax(self,columnorder,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
         newcolumnorder = copy.deepcopy(columnorder)
