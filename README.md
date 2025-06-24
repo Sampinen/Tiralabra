@@ -3,6 +3,7 @@
 ## Releaset
 
 HUOM! Jos sovellus ei ole toimintakunnossa vertaisarviohetkellä, kokeile viikko6 versiota! 
+
 [viikon 6 release](https://github.com/Sampinen/Tiralabra/releases/tag/viikko6)
 
 [viikon 3 release](https://github.com/Sampinen/Tiralabra/releases/tag/viikko3)
