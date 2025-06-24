@@ -49,7 +49,7 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
-            minmax = self.minmax(self.columnorder,self.board,self.played,1,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -68,27 +68,50 @@ class ConnectFour:
 
     def check_win_horizontal(self,r,c,p,board):
         score = 0
-        i = 0
-        while i >= 0:
+        emptyorp = 0
+        winrow = 0 #counts how many player tags are in a continous row
+        i = 1
+        while i <= 3:
             if self.is_valid_location(r,c+i):
                 if board[r][c+i] == p:
                     score +=1
+                    emptyorp +=1
                     i += 1
-                else:
+                    if score == emptyorp: #If emptyorp is larger than score, there must have been an empty cell in between, therefore it's not a contious row
+                        winrow += 1
+                elif board[r][c+i] == "  ":
+                    emptyorp += 1
+                    i +=1
+                else: # Stops if the cell has the opposite players tag
                     break
             else:
                 break
         i = -1
-        while i < 0:
+        continousrow = True
+        while i >= -3:
             if self.is_valid_location(r,c+i):
                 if board[r][c+i] == p:
+                    emptyorp += 1
                     score += 1
                     i -= 1
+                    if continousrow:
+                        winrow += 1
+                elif board[r][c+i] == "  ":
+                    emptyorp +=1
+                    continousrow = False
                 else:
                     break
             else:
                 break
-        return score >=4
+        if emptyorp <3: #There is not enough space for a win
+            score = 0
+        if winrow >= 3: #Playing here gives a victory
+            return 1000000
+        if winrow ==2 or score >=3: #either two in a row or three or more spread out pieces
+            return 8
+        if score >= 1: #There is at least one other piece within range of making a winning row
+            return 5
+        return 2 # No player tags here beforehand but there is still space for a winnig row
 
 
     def check_win_vertical(self,r,c,p,board):
@@ -184,7 +207,7 @@ class ConnectFour:
                 self.play(c,self.player1,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player1,newboard):
                     #print("-"*(3 - depth), "Player win found!")
-                    return c, 9999999
+                    return c, 10000000 + depth
                 #print("-"*(3 - depth), "Searching", c)
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
@@ -205,7 +228,7 @@ class ConnectFour:
 
                 if self.check_win_cell(r,c,self.player2,newboard):
                     #print(" "*(3 - depth), "AI win found")
-                    return c, -9999999
+                    return c, -10000000 -depth
                 #print(" "*(3 - depth), "Searching", c)
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                 if new_value < value:
