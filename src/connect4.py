@@ -29,7 +29,7 @@ class ConnectFour:
         print(output)
 
     def play(self,column: int,player,board,played):
-        """ Function that plays """
+        """ Function that plays a player tag in a column"""
         if played[column] <6:
             row = played[column]+1
             board[row][column] = str(player)
@@ -64,11 +64,13 @@ class ConnectFour:
                 return False
 
     def is_valid_location(self,r,c):
+        """ r= row, c=column """
         return c in range(1,self.columncount+1) and r in range(1,self.rowcount+1)
 
     def check_win_horizontal(self,r,c,p,board):
+        """ r= row, c=column, p=player"""
         score = 0
-        emptyorp = 0
+        emptyorp = 0 # Empty or player
         winrow = 0 #counts how many player tags are in a continous row
         i = 1
         while i <= 3:
@@ -115,9 +117,10 @@ class ConnectFour:
 
 
     def check_win_vertical(self,r,c,p,board):
+        """ r= row, c=column, p=player"""
         score = 0
         i = -1
-        while i <= -1:
+        while i >= -3:
             if self.is_valid_location(r+i,c):
                 if board[r+i][c] == p:
                     score += 1
@@ -126,8 +129,7 @@ class ConnectFour:
                     break
             else:
                 break
-        emptyorp = score
-        if score >= 3: #There is already three player tags in a row so playing one more gives a victory
+        if score >= 3: # playing here results in a victory
             return 1000000
         i = 1
         emptyorp = score #Empty or player
@@ -146,53 +148,102 @@ class ConnectFour:
         return 2 # Playing here gives 1 in a row
 
     def check_win_diagonal_down(self,r,c,p,board):
+        """ r= row, c=column, p=player"""
         score = 0
         i = 0
-        while i >= 0:
+        emptyorp = 0 # empty or player
+        winrow = 0
+        while i <= 3:
             if self.is_valid_location(r-i,c+i):
                 if board[r-i][c+i] == p:
                     score +=1
+                    i += 1
+                    if score == emptyorp:
+                        winrow +=1
+                    emptyorp += 1
+                elif board[r-i][c+i]=="  ":
+                    emptyorp +=1
                     i += 1
                 else:
                     break
             else:
                 break
         i = -1
-        while i < 0:
+        continousrow = True
+        while i >= -3:
             if self.is_valid_location(r-i,c+i):
                 if board[r-i][c+i] == p:
                     score += 1
                     i -= 1
+                    emptyorp += 1
+                    if continousrow:
+                        winrow +=1
+                elif board[r-i][c+i] == "  ":
+                    continousrow = False
+                    emptyorp += 1
                 else:
                     break
             else:
                 break
-        return score >=4
+        if emptyorp <=2:
+            return 0
+        if winrow >= 3:
+            return 1000000
+        if winrow ==2 or score >=3:
+            return 8
+        if score >=1:
+            return 5
+        return 2
 
 
     def check_win_diagonal_up(self,r,c,p,board):
+        """ r= row, c=column, p=player"""
         score = 0
         i = 0
+        emptyorp = 0
+        winrow = 0
         while i >= 0:
             if self.is_valid_location(r+i,c+i):
                 if board[r+i][c+i] == p:
-                    score +=1
                     i += 1
+                    score +=1
+                    if emptyorp == winrow:
+                        winrow += 1
+                    emptyorp += 1
+                elif board[r+i][c+i] == "  ":
+                    i += 1
+                    emptyorp += 1
                 else:
                     break
             else:
                 break
         i = -1
+        continousrow = True
         while i < 0:
             if self.is_valid_location(r+i,c+i):
                 if board[r+i][c+i] == p:
                     score += 1
                     i -= 1
+                    emptyorp +=1
+                    if continousrow:
+                        winrow += 1
+                elif board[r+i][c+i] == "  ":
+                    continousrow = False
+                    emptyorp += 1
+                    i -= 1
                 else:
                     break
             else:
                 break
-        return score >=4
+        if emptyorp <= 2:
+            return 0
+        if winrow >=3:
+            return 1000000
+        if winrow == 2 or score >= 3:
+            return 8
+        if score >= 1:
+            return 5
+        return 2
 
     def check_win_cell(self,r,c,p,board):
         """Checks a specific cell and whether or not it gives a victory"""
