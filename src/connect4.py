@@ -116,8 +116,8 @@ class ConnectFour:
 
     def check_win_vertical(self,r,c,p,board):
         score = 0
-        i = 0
-        while i <= 0:
+        i = -1
+        while i <= -1:
             if self.is_valid_location(r+i,c):
                 if board[r+i][c] == p:
                     score += 1
@@ -126,7 +126,24 @@ class ConnectFour:
                     break
             else:
                 break
-        return score >=4
+        emptyorp = score
+        if score >= 3: #There is already three player tags in a row so playing one more gives a victory
+            return 1000000
+        i = 1
+        emptyorp = score #Empty or player
+        while emptyorp <=3:
+            if self.is_valid_location(r+i,c): # We already know any cell above must be empty so there is no reason to check that out
+                emptyorp += 1
+                i += 1
+            else:
+                break
+        if emptyorp <=2: # No space for a win
+            return 0
+        if score == 2:
+            return 8 #Playing here gives 3 in a row
+        if score == 1:
+            return 5 # Playing here gives 2 in a row
+        return 2 # Playing here gives 1 in a row
 
     def check_win_diagonal_down(self,r,c,p,board):
         score = 0
