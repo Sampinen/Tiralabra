@@ -44,9 +44,9 @@ class ConnectFour:
             column = int(input("Pick a column (1-7): "))
             row = self.played[column]+1
             self.board = self.play(column, self.player1,self.board,self.played)
-            win1 = self.check_win_cell(row,column,self.player1,self.board)
+            score = self.check_win_cell(row,column,self.player1,self.board)
             self.print_board()
-            if win1:
+            if score >= 1000000:
                 print("Player win")
                 return False
             minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
@@ -57,9 +57,9 @@ class ConnectFour:
                 return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
-            win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
+            score = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
-            if win2:
+            if score >= 1000000:
                 print("AI win")
                 return False
 
@@ -253,7 +253,7 @@ class ConnectFour:
         score2 = self.check_win_diagonal_up(r,c,p,board)
         score3 = self.check_win_horizontal(r,c,p,board)
         score4 = self.check_win_vertical(r,c,p,board)
-        return score1 >= 1000000 or score2 >= 1000000 or score3 >= 1000000 or score4 >= 1000000
+        return score1 + score2 + score3 +score4
 
     def get_valid_columns(self,played,columnorder):
         for i in range(len(columnorder)-1,-1,-1):
@@ -275,10 +275,9 @@ class ConnectFour:
                 newboard = copy.deepcopy(board)
                 r = newplayed[c] +1
                 self.play(c,self.player1,newboard,newplayed)
-                if self.check_win_cell(r,c,self.player1,newboard):
-                    #print("-"*(3 - depth), "Player win found!")
-                    return c, 10000000 + depth
-                #print("-"*(3 - depth), "Searching", c)
+                value = self.check_win_cell(r,c,self.player1,newboard)
+                if value >= 1000000:
+                    return c, 1000000 + depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
                     value = new_value
@@ -295,10 +294,10 @@ class ConnectFour:
                 newboard = copy.deepcopy(board)
                 r = newplayed[c] +1
                 self.play(c,self.player2,newboard,newplayed)
-
-                if self.check_win_cell(r,c,self.player2,newboard):
+                value = -self.check_win_cell(r,c,self.player2,newboard)
+                if value >= -1000000:
                     #print(" "*(3 - depth), "AI win found")
-                    return c, -10000000 -depth
+                    return c, -1000000 -depth
                 #print(" "*(3 - depth), "Searching", c)
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                 if new_value < value:
