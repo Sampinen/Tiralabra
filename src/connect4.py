@@ -101,6 +101,7 @@ class ConnectFour:
                 elif board[r][c+i] == "  ":
                     emptyorp +=1
                     continousrow = False
+                    i -= 1
                 else:
                     break
             else:
@@ -181,6 +182,7 @@ class ConnectFour:
                 elif board[r-i][c+i] == "  ":
                     continousrow = False
                     emptyorp += 1
+                    i -= 1
                 else:
                     break
             else:
@@ -251,7 +253,7 @@ class ConnectFour:
         score2 = self.check_win_diagonal_up(r,c,p,board)
         score3 = self.check_win_horizontal(r,c,p,board)
         score4 = self.check_win_vertical(r,c,p,board)
-        return score1 or score2 or score3 or score4
+        return score1 >= 1000000 or score2 >= 1000000 or score3 >= 1000000 or score4 >= 1000000
 
     def get_valid_columns(self,played,columnorder):
         for i in range(len(columnorder)-1,-1,-1):
