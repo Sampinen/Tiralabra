@@ -44,12 +44,12 @@ class ConnectFour:
             column = int(input("Pick a column (1-7): "))
             row = self.played[column]+1
             self.board = self.play(column, self.player1,self.board,self.played)
-            score = self.check_win_cell(row,column,self.player1,self.board)
+            win1 = self.check_win_cell(row,column,self.player1,self.board)
             self.print_board()
-            if score >= 1000000:
+            if win1:
                 print("Player win")
                 return False
-            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,5,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -57,9 +57,9 @@ class ConnectFour:
                 return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
-            score = self.check_win_cell(row2,best_column,self.player2,self.board)
+            win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
-            if score >= 1000000:
+            if win2:
                 print("AI win")
                 return False
 
@@ -108,13 +108,7 @@ class ConnectFour:
                 break
         if emptyorp <3: #There is not enough space for a win
             score = 0
-        if winrow >= 3: #Playing here gives a victory
-            return 1000000
-        if winrow ==2 or score >=3: #either two in a row or three or more spread out pieces
-            return 8
-        if score >= 1: #There is at least one other piece within range of making a winning row
-            return 5
-        return 2 # No player tags here beforehand but there is still space for a winnig row
+        return winrow, score, emptyorp
 
 
     def check_win_vertical(self,r,c,p,board):
@@ -130,8 +124,6 @@ class ConnectFour:
                     break
             else:
                 break
-        if score >= 3: # playing here results in a victory
-            return 1000000
         i = 1
         emptyorp = score #Empty or player
         while emptyorp <=3:
@@ -140,18 +132,12 @@ class ConnectFour:
                 i += 1
             else:
                 break
-        if emptyorp <=2: # No space for a win
-            return 0
-        if score == 2:
-            return 8 #Playing here gives 3 in a row
-        if score == 1:
-            return 5 # Playing here gives 2 in a row
-        return 2 # Playing here gives 1 in a row
+        return score, score, emptyorp
 
     def check_win_diagonal_down(self,r,c,p,board):
         """ r= row, c=column, p=player"""
         score = 0
-        i = 0
+        i = 1
         emptyorp = 0 # empty or player
         winrow = 0
         while i <= 3:
@@ -187,24 +173,16 @@ class ConnectFour:
                     break
             else:
                 break
-        if emptyorp <=2:
-            return 0
-        if winrow >= 3:
-            return 1000000
-        if winrow ==2 or score >=3:
-            return 8
-        if score >=1:
-            return 5
-        return 2
+        return winrow, score, emptyorp
 
 
     def check_win_diagonal_up(self,r,c,p,board):
         """ r= row, c=column, p=player"""
         score = 0
-        i = 0
+        i = 1
         emptyorp = 0
         winrow = 0
-        while i >= 0:
+        while i <= 3:
             if self.is_valid_location(r+i,c+i):
                 if board[r+i][c+i] == p:
                     i += 1
@@ -237,23 +215,47 @@ class ConnectFour:
                     break
             else:
                 break
-        if emptyorp <= 2:
-            return 0
-        if winrow >=3:
-            return 1000000
-        if winrow == 2 or score >= 3:
-            return 8
-        if score >= 1:
-            return 5
-        return 2
+        return winrow, score, emptyorp
 
+    def score_board(self,board,played):
+        board_score = 0
+        for c in range(1,self.columncount+1):
+            r = played[c]
+            if r >= self.rowcount:
+                pass
+            else:
+                board_score += self.check_score_cell(r,c,self.player1,board)
+                board_score -= self.check_score_cell(r,c,self.player2,board)
+        return board_score
+
+    def give_points(self,winrow,score, emptyorp):
+        if emptyorp <=2:
+            return 0
+        if winrow >= 3:
+            return 10
+        if score >= 3 or winrow ==2:
+            return 7
+        if score >= 1:
+            return 4
+        return 2
+    def check_score_cell(self,r,c,p,board):
+        """Checks a specific cell and whether or not it gives a victory"""
+        winrow1, score1, emptyorp1 = self.check_win_diagonal_down(r,c,p,board)
+        winrow2, score2, emptyorp2 = self.check_win_diagonal_up(r,c,p,board)
+        winrow3, score3, emptyorp3 = self.check_win_horizontal(r,c,p,board)
+        winrow4, score4, emptyorp4 = self.check_win_vertical(r,c,p,board)
+        points1 = self.give_points(winrow1, score1, emptyorp1)
+        points2 = self.give_points(winrow2, score2, emptyorp2)
+        points3 = self.give_points(winrow3, score3, emptyorp3)
+        points4 = self.give_points(winrow4, score4, emptyorp4)
+        return points1 + points2 + points3 +points4
     def check_win_cell(self,r,c,p,board):
         """Checks a specific cell and whether or not it gives a victory"""
-        score1 = self.check_win_diagonal_down(r,c,p,board)
-        score2 = self.check_win_diagonal_up(r,c,p,board)
-        score3 = self.check_win_horizontal(r,c,p,board)
-        score4 = self.check_win_vertical(r,c,p,board)
-        return score1 + score2 + score3 +score4
+        score1 = self.check_win_diagonal_down(r,c,p,board)[0]
+        score2 = self.check_win_diagonal_up(r,c,p,board)[0]
+        score3 = self.check_win_horizontal(r,c,p,board)[0]
+        score4 = self.check_win_vertical(r,c,p,board)[0]
+        return score1 >= 3 or score2 >= 3 or score3 >= 3 or score4 >=3
 
     def get_valid_columns(self,played,columnorder):
         for i in range(len(columnorder)-1,-1,-1):
@@ -264,10 +266,10 @@ class ConnectFour:
         newcolumnorder = copy.deepcopy(columnorder)
         self.get_valid_columns(played,newcolumnorder)
         if depth == 0:
-            return None,0
+            return None,self.score_board(board,played)
         if len(newcolumnorder) == 0:
             return None,0
-        column = 4
+        column = newcolumnorder[0]
         if maxplayer: # Human player
             value = -99999999
             for c in newcolumnorder:
@@ -275,8 +277,7 @@ class ConnectFour:
                 newboard = copy.deepcopy(board)
                 r = newplayed[c] +1
                 self.play(c,self.player1,newboard,newplayed)
-                value = self.check_win_cell(r,c,self.player1,newboard)
-                if value >= 1000000:
+                if self.check_win_cell(r,c,self.player1,newboard):
                     return c, 1000000 + depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
@@ -294,8 +295,7 @@ class ConnectFour:
                 newboard = copy.deepcopy(board)
                 r = newplayed[c] +1
                 self.play(c,self.player2,newboard,newplayed)
-                value = -self.check_win_cell(r,c,self.player2,newboard)
-                if value >= -1000000:
+                if self.check_win_cell(r,c,self.player2,newboard):
                     #print(" "*(3 - depth), "AI win found")
                     return c, -1000000 -depth
                 #print(" "*(3 - depth), "Searching", c)
