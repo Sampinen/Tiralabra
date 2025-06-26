@@ -145,7 +145,7 @@ class ConnectFour:
                 if board[r-i][c+i] == p:
                     score +=1
                     i += 1
-                    if score == emptyorp:
+                    if winrow == emptyorp:
                         winrow +=1
                     emptyorp += 1
                 elif board[r-i][c+i]=="  ":
