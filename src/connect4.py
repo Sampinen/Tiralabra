@@ -70,128 +70,37 @@ class ConnectFour:
 
     def check_win_horizontal(self,r,c,p,board):
         """ r= row, c=column, p=player"""
-        score = 0
-        emptyorp = 0 # Empty or player
-        winrow = 0 #counts how many player tags are in a continous row
-        i = 1
-        while i <= 3:
-            if self.is_valid_location(r,c+i):
-                if board[r][c+i] == p:
-                    score +=1
-                    emptyorp +=1
-                    i += 1
-                    if score == emptyorp: #If emptyorp is larger than score, there must have been an empty cell in between, therefore it's not a contious row
-                        winrow += 1
-                elif board[r][c+i] == "  ":
-                    emptyorp += 1
-                    i +=1
-                else: # Stops if the cell has the opposite players tag
-                    break
-            else:
-                break
-        i = -1
-        continousrow = True
-        while i >= -3:
-            if self.is_valid_location(r,c+i):
-                if board[r][c+i] == p:
-                    emptyorp += 1
-                    score += 1
-                    i -= 1
-                    if continousrow:
-                        winrow += 1
-                elif board[r][c+i] == "  ":
-                    emptyorp +=1
-                    continousrow = False
-                    i -= 1
-                else:
-                    break
-            else:
-                break
-        if emptyorp <3: #There is not enough space for a win
-            score = 0
-        return winrow, score, emptyorp
+        return self.check_score_direction(r,c,p,0,1,board)
 
 
     def check_win_vertical(self,r,c,p,board):
         """ r= row, c=column, p=player"""
-        score = 0
-        i = -1
-        while i >= -3:
-            if self.is_valid_location(r+i,c):
-                if board[r+i][c] == p:
-                    score += 1
-                    i -= 1
-                else:
-                    break
-            else:
-                break
-        i = 1
-        emptyorp = score #Empty or player
-        while emptyorp <=3:
-            if self.is_valid_location(r+i,c): # We already know any cell above must be empty so there is no reason to check that out
-                emptyorp += 1
-                i += 1
-            else:
-                break
-        return score, score, emptyorp
+        return self.check_score_direction(r,c,p,1,0,board)
 
     def check_win_diagonal_down(self,r,c,p,board):
         """ r= row, c=column, p=player"""
-        score = 0
-        i = 1
-        emptyorp = 0 # empty or player
-        winrow = 0
-        while i <= 3:
-            if self.is_valid_location(r-i,c+i):
-                if board[r-i][c+i] == p:
-                    score +=1
-                    i += 1
-                    if winrow == emptyorp:
-                        winrow +=1
-                    emptyorp += 1
-                elif board[r-i][c+i]=="  ":
-                    emptyorp +=1
-                    i += 1
-                else:
-                    break
-            else:
-                break
-        i = -1
-        continousrow = True
-        while i >= -3:
-            if self.is_valid_location(r-i,c+i):
-                if board[r-i][c+i] == p:
-                    score += 1
-                    i -= 1
-                    emptyorp += 1
-                    if continousrow:
-                        winrow +=1
-                elif board[r-i][c+i] == "  ":
-                    continousrow = False
-                    emptyorp += 1
-                    i -= 1
-                else:
-                    break
-            else:
-                break
-        return winrow, score, emptyorp
+        return self.check_score_direction(r,c,p,-1,1,board)
 
 
     def check_win_diagonal_up(self,r,c,p,board):
+        """ r= row, c=column, p=player"""
+        return self.check_score_direction(r,c,p,1,1,board)
+
+    def check_score_direction(self,r,c,p,dr,dc,board):
         """ r= row, c=column, p=player"""
         score = 0
         i = 1
         emptyorp = 0
         winrow = 0
         while i <= 3:
-            if self.is_valid_location(r+i,c+i):
-                if board[r+i][c+i] == p:
+            if self.is_valid_location(r+i*dr,c+i*dc):
+                if board[r+i*dr][c+i*dc] == p:
                     i += 1
                     score +=1
                     if emptyorp == winrow:
                         winrow += 1
                     emptyorp += 1
-                elif board[r+i][c+i] == "  ":
+                elif board[r+i*dr][c+i*dc] == "  ":
                     i += 1
                     emptyorp += 1
                 else:
@@ -201,14 +110,14 @@ class ConnectFour:
         i = -1
         continousrow = True
         while i < 0:
-            if self.is_valid_location(r+i,c+i):
-                if board[r+i][c+i] == p:
+            if self.is_valid_location(r+i*dr,c+i*dc):
+                if board[r+i*dr][c+i*dc] == p:
                     score += 1
                     i -= 1
                     emptyorp +=1
                     if continousrow:
                         winrow += 1
-                elif board[r+i][c+i] == "  ":
+                elif board[r+i*dr][c+i*dc] == "  ":
                     continousrow = False
                     emptyorp += 1
                     i -= 1
