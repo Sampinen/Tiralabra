@@ -39,7 +39,8 @@ class ConnectFour:
     def ask(self):
         """This is the main game loop that runs the game"""
         # Ask the player to pick a symbol that will be displayed on the screen
-        self.player1 = str(input("Pick a symbol: "))[0] + " "
+        self.print_board()
+        self.player1 = str(input("Choose a symbol to use as a player tag: "))[0] + " "
         while True:
             column = int(input("Pick a column (1-7): "))
             row = self.played[column]+1
@@ -49,7 +50,7 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
-            minmax = self.minmax(self.columnorder,self.board,self.played,5,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,8,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -217,29 +218,55 @@ class ConnectFour:
                 break
         return winrow, score, emptyorp
 
+    def has_nearing_cells(self,r,c,board):
+        if self.is_valid_location(r,c+1):
+            if board[r][c+1] != "  ":
+                return True
+        if self.is_valid_location(r,c-1):
+            if board[r][c-1] != "  ":
+                return True
+        if self.is_valid_location(r+1,c+1):
+            if board[r+1][c+1] != "  ":
+                return True
+        if self.is_valid_location(r+1,c-1):
+            if board[r+1][c-1] != "  ":
+                return True
+        return False
+
+
     def score_board(self,board,played):
+        """ Counts potential scores around cells where someone has already played """
         board_score = 0
-        for c in range(1,self.columncount+1):
-            r = played[c]
-            if r >= self.rowcount:
-                pass
+        c =1
+        r = played[c]+1
+        while c <= self.columncount:
+            if r > self.rowcount:
+                c +=1
+                if c <= self.columncount:
+                    r = played[c]+1
             else:
                 board_score += self.check_score_cell(r,c,self.player1,board)
                 board_score -= self.check_score_cell(r,c,self.player2,board)
+                if self.has_nearing_cells(r,c,board):
+                    r += 1
+                else:
+                    c +=1
+                    if c <= self.columncount:
+                        r = played[c]+1
         return board_score
 
     def give_points(self,winrow,score, emptyorp):
-        if emptyorp <=2:
+        if emptyorp <=2: #no more space for a win
             return 0
-        if winrow >= 3:
-            return 10
-        if score >= 3 or winrow ==2:
+        if winrow >= 3: # 3 in a row
+            return 15
+        if score >= 3 or winrow ==2: # 2 in a continous row or 3 or more pieces within range for a winrow
             return 7
-        if score >= 1:
+        if score >= 1: # At least 1 in range for a winrow
             return 4
-        return 2
+        return 2 # no player tags in this row but enough space for a winrow
     def check_score_cell(self,r,c,p,board):
-        """Checks a specific cell and whether or not it gives a victory"""
+        """Returns a score for a cell depending on how many 1,2 and 3 in a rows there are"""
         winrow1, score1, emptyorp1 = self.check_win_diagonal_down(r,c,p,board)
         winrow2, score2, emptyorp2 = self.check_win_diagonal_up(r,c,p,board)
         winrow3, score3, emptyorp3 = self.check_win_horizontal(r,c,p,board)
