@@ -1,6 +1,9 @@
 
 # Ohjelman yleisrakenne
 
+- main.py tiedoston ainoa tehtävä on käynnistää peli kutsumalla connect4.py:n game_loop funktiota.
+
+- Game_loop toimii pelin käyttöliittymänä. Jokaisella vuorollaan pelaaja antaa jonkin rivin johon haluaa pelata, jonka jälkeen game_loop kutsuu minmax funtiota.
 
 # Saavutetut aika- ja tilavaativuudet (esim. O-analyysit pseudokoodista)
 
@@ -11,7 +14,7 @@ Minmaxin maksimiaikavaatimus on aina O(n^m),
 
 # Työn mahdolliset puutteet ja parannusehdotukset
 
-Heuristiikkafunktio voisi varmaan edelleen olla parempi. En saanut muistiominaisuutta kovin pitkälle, enkä ole varma kuinka monimutkainen muistin olisi pitänyt olla, mutta algoritmi osaa nyt päivittää pystyrivijärjestyksen sen perusteella, kuinka syvälle algoritmi on mennyt kyseisessä pystyrivissä edellisellä kerralla
+Heuristiikkafunktio voisi varmaan edelleen olla parempi. En saanut muistiominaisuutta kovin pitkälle, enkä ole varma kuinka monimutkainen muistin olisi pitänyt olla, mutta algoritmi osaa nyt päivittää pystyrivijärjestyksen sen perusteella, kuinka syvälle algoritmi on mennyt kyseisessä pystyrivissä edellisellä kerralla. Koodi voisi myös olla siistimpää jossakin kohdissa.
 
 
 # Laajojen kielimallien (ChatGPT yms.) käyttö. Mainitse mitä mallia on käytetty ja miten. Mainitse myös mikäli et ole käyttänyt. Tämä on tärkeää!
