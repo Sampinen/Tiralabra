@@ -2,6 +2,11 @@
 
 # Yksikkötestauksen kattavuusraportti.
 
+File 	                    statements 	missing 	excluded 	branches 	partial 	coverage
+src/connect4.py 	        212 	    134 	    0 	        94 	        5 	        32%
+src/tests/__init__.py 	    0 	        0 	        0 	        0 	        0 	        100%
+src/tests/connect4_test.py 	60 	        0 	        0 	        0 	        0 	        100%
+Total 	                    272 	    134 	    0 	        94 	        5 	        43%
 
 #  Mitä on testattu, miten tämä tehtiin?
 
