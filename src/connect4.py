@@ -1,10 +1,9 @@
-import random
 import copy
 
 class ConnectFour:
     def __init__(self):
         self.player1= ""
-        self.player2 = "P2"
+        self.player2 = "AI"
         self.columncount = 7
         self.rowcount =6
         self.board = {
@@ -51,7 +50,7 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
-            self.check_column_height(column)
+            self.remove_column_if_full(column)
             minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
             best_column = minmax[0]
             print(minmax)
@@ -60,24 +59,18 @@ class ConnectFour:
                 return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
-            self.check_column_height(best_column)
+            self.remove_column_if_full(best_column)
             self.columnorder = self.order_colummns(self.columnorder,self.columndepth)
-            print(self.columndepth)
-            print(self.columnorder)
             win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
             if win2:
                 print("AI win")
                 return False
-    def check_column_height(self,column):
+    def remove_column_if_full(self,column):
         if self.played[column] >= self.rowcount:
             self.columnorder.remove(column)
             return True
         return False
-
-    def put_column_first(self,column):
-        self.columnorder.remove(column)
-        self.columnorder.insert(0,column)
 
     def order_colummns(self,columnorder,columndepth): # Orders columns based on how deep the algorithm searches each of them
         return sorted(columnorder,key=lambda x: columndepth[x],reverse=True)
