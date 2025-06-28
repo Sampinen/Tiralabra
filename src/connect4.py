@@ -36,7 +36,7 @@ class ConnectFour:
             played[column] +=1
         return board
 
-    def ask(self):
+    def game_loop(self):
         """This is the main game loop that runs the game"""
         # Ask the player to pick a symbol that will be displayed on the screen
         self.print_board()
@@ -144,7 +144,7 @@ class ConnectFour:
 
 
     def score_board(self,board,played):
-        """ Counts potential scores around cells where someone has already played """
+        """ Counts scores around cells where someone has already played """
         board_score = 0
         c =1
         r = played[c]+1
