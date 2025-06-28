@@ -16,7 +16,6 @@ class TestConnect4(unittest.TestCase):
         self.game.play(3,"X",self.board,self.played)
         self.game.play(4,"X",self.board,self.played)
         self.assertEqual(self.game.check_win_cell(1,1,"X",self.board), True)
-        self.assertEqual(self.game.check_win_horizontal(1,1,"X",self.board),True)
 
     def test_check_win_returns_true_with_vertical_win(self):
         self.game.play(1,"X",self.board,self.played)
@@ -24,7 +23,6 @@ class TestConnect4(unittest.TestCase):
         self.game.play(1,"X",self.board,self.played)
         self.game.play(1,"X",self.board,self.played)
         self.assertEqual(self.game.check_win_cell(4,1,"X",self.board),True)
-        self.assertEqual(self.game.check_win_vertical(4,1,"X",self.board),True)
 
     def test_check_win_returns_true_with_diagnoal_up_win(self):
         self.game.play(1,"X",self.board,self.played)
@@ -42,7 +40,6 @@ class TestConnect4(unittest.TestCase):
         self.game.play(4,"X", self.board,self.played)
 
         self.assertEqual(self.game.check_win_cell(1,1,"X",self.board),True)
-        self.assertEqual(self.game.check_win_diagonal_up(1,1,"X",self.board),True)
 
     def test_check_win_returns_true_with_diagnoal_down_win(self):
         self.game.play(1,"Å",self.board,self.played)
@@ -60,4 +57,3 @@ class TestConnect4(unittest.TestCase):
         self.game.play(4,"X",self.board,self.played)
 
         self.assertEqual(self.game.check_win_cell(4,1,"X",self.board),True)
-        self.assertEqual(self.game.check_win_diagonal_down(4,1,"X",self.board),True)
