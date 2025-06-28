@@ -17,6 +17,7 @@ class ConnectFour:
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0} #stores how many values have been played in each row
         self.columnorder = [4,3,5,2,6,1,7] #Order in which the minmax algorithm goes through columns
+        self.columndepth = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
 
     def print_board(self):
         output = ""
@@ -51,7 +52,7 @@ class ConnectFour:
                 print("Player win")
                 return False
             self.check_column_height(column)
-            minmax = self.minmax(self.columnorder,self.board,self.played,8,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -59,9 +60,9 @@ class ConnectFour:
                 return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
-            check_column_height = self.check_column_height(best_column)
-            if not check_column_height and self.columnorder[0] != best_column:
-                self.put_column_first(best_column)
+            self.check_column_height(best_column)
+            self.columnorder = self.order_colummns(self.columnorder,self.columndepth)
+            print(self.columndepth)
             print(self.columnorder)
             win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
@@ -77,6 +78,9 @@ class ConnectFour:
     def put_column_first(self,column):
         self.columnorder.remove(column)
         self.columnorder.insert(0,column)
+
+    def order_colummns(self,columnorder,columndepth): # Orders columns based on how deep the algorithm searches each of them
+        return sorted(columnorder,key=lambda x: columndepth[x],reverse=True)
 
     def is_valid_location(self,r,c):
         """ r= row, c=column """
@@ -228,6 +232,7 @@ class ConnectFour:
                 r = newplayed[c] +1
                 self.play(c,self.player1,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player1,newboard):
+                    self.columndepth[c] = depth
                     return c, 1000000 + depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
@@ -236,7 +241,7 @@ class ConnectFour:
                 alpha = max(alpha,value)
                 if alpha >= beta:
                     break
-            #print("-"*(3 - depth), value, column)
+            self.columndepth[column] = depth
             return column, value
         else: #minplayer, AI
             value = 9999999
@@ -246,9 +251,8 @@ class ConnectFour:
                 r = newplayed[c] +1
                 self.play(c,self.player2,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player2,newboard):
-                    #print(" "*(3 - depth), "AI win found")
+                    self.columndepth[c] = depth
                     return c, -1000000 -depth
-                #print(" "*(3 - depth), "Searching", c)
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                 if new_value < value:
                     value = new_value
@@ -256,6 +260,5 @@ class ConnectFour:
                 beta = min(beta,value)
                 if alpha >= beta:
                     break
-
-            #print(" "*(3 - depth), value, column)
+            self.columndepth[column] = depth
             return column, value
