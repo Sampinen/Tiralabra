@@ -1,5 +1,6 @@
 import random
 import copy
+
 class ConnectFour:
     def __init__(self):
         self.player1= ""
@@ -16,7 +17,6 @@ class ConnectFour:
         }
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0} #stores how many values have been played in each row
         self.columnorder = [4,3,5,2,6,1,7] #Order in which the minmax algorithm goes through columns
-
 
     def print_board(self):
         output = ""
@@ -50,6 +50,7 @@ class ConnectFour:
             if win1:
                 print("Player win")
                 return False
+            self.check_column_height(column)
             minmax = self.minmax(self.columnorder,self.board,self.played,8,False)
             best_column = minmax[0]
             print(minmax)
@@ -58,11 +59,24 @@ class ConnectFour:
                 return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
+            check_column_height = self.check_column_height(best_column)
+            if not check_column_height and self.columnorder[0] != best_column:
+                self.put_column_first(best_column)
+            print(self.columnorder)
             win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
             if win2:
                 print("AI win")
                 return False
+    def check_column_height(self,column):
+        if self.played[column] >= self.rowcount:
+            self.columnorder.remove(column)
+            return True
+        return False
+
+    def put_column_first(self,column):
+        self.columnorder.remove(column)
+        self.columnorder.insert(0,column)
 
     def is_valid_location(self,r,c):
         """ r= row, c=column """
