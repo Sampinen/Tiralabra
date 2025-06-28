@@ -179,7 +179,7 @@ class ConnectFour:
         if emptyorp <=2: #no more space for a win
             return 0
         if winrow >= 3: # 3 in a row
-            return 15
+            return 12
         if score >= 3 or winrow ==2: # 2 in a continous row or 3 or more pieces within range for a winrow
             return 7
         if score >= 1: # At least 1 in range for a winrow
