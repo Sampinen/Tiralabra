@@ -6,23 +6,17 @@ class ConnectFour:
         self.player2 = "AI"
         self.columncount = 7
         self.rowcount =6
-        self.board = {
-        6: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
-        5: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
-        4: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
-        3: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
-        2: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "},
-        1: {1: "  ",2: "  ",3: "  ", 4: "  ", 5:"  ", 6:"  ",7:"  "}
-        }
+        self.board = [["  " for x in range(self.columncount +1)] for y in range(self.rowcount+1)]
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0} #stores how many values have been played in each row
         self.columnorder = [4,3,5,2,6,1,7] #Order in which the minmax algorithm goes through columns
         self.columndepth = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
 
     def print_board(self):
         output = ""
-        for _,line in self.board.items():
+        for row in range(self.rowcount,0,-1):
             output += "----------------------\n"
-            for _,value in line.items():
+            for column in range(1,self.columncount+1):
+                value = self.board[row][column]
                 output += "|" +str(value)
             output +="|\n"
         output += "----------------------"
@@ -51,7 +45,7 @@ class ConnectFour:
                 print("Player win")
                 return False
             self.remove_column_if_full(column)
-            minmax = self.minmax(self.columnorder,self.board,self.played,9,False)
+            minmax = self.minmax(self.columnorder,self.board,self.played,8,False)
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
