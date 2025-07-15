@@ -61,6 +61,7 @@ class ConnectFour:
             if win2:
                 print("AI win")
                 return False
+            #print(str(self.memory))
 
     def iterative_deepening(self):
         timeout = time.time() +10
@@ -221,6 +222,8 @@ class ConnectFour:
     def minmax(self,columnorder,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
         newcolumnorder = copy.deepcopy(columnorder)
         self.get_valid_columns(played,newcolumnorder)
+        if str(board) in self.memory:
+            return None, self.memory[str(board)]
         if depth == 0:
             return None,self.score_board(board,played)
         if len(newcolumnorder) == 0:
@@ -235,6 +238,7 @@ class ConnectFour:
                 self.play(c,self.player1,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player1,newboard):
                     self.columndepth[c] = depth
+                    self.memory[str(newboard)] = 1000000 +depth
                     return c, 1000000 + depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
@@ -254,6 +258,7 @@ class ConnectFour:
                 self.play(c,self.player2,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player2,newboard):
                     self.columndepth[c] = depth
+                    self.memory[str(newboard)] = -1000000 -depth
                     return c, -1000000 -depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                 if new_value < value:
