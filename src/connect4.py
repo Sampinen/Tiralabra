@@ -1,16 +1,17 @@
 import copy
+import time
 
 class ConnectFour:
-    def __init__(self):
+    def __init__(self,rowcount=6,columncount=7):
         self.player1= ""
         self.player2 = "AI"
-        self.columncount = 7
-        self.rowcount =6
+        self.columncount = columncount
+        self.rowcount =rowcount
         self.board = [["  " for x in range(self.columncount +1)] for y in range(self.rowcount+1)]
         self.played = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0} #stores how many values have been played in each row
         self.columnorder = [4,3,5,2,6,1,7] #Order in which the minmax algorithm goes through columns
         self.columndepth = {1: 0,2: 0,3:0,4: 0,5: 0,6: 0,7: 0}
-
+        self.memory= {}
     def print_board(self):
         output = ""
         for row in range(self.rowcount,0,-1):
@@ -45,7 +46,7 @@ class ConnectFour:
                 print("Player win")
                 return False
             self.remove_column_if_full(column)
-            minmax = self.minmax(self.columnorder,self.board,self.played,8,False)
+            minmax = self.iterative_deepening()
             best_column = minmax[0]
             print(minmax)
             if best_column is None:
@@ -60,6 +61,20 @@ class ConnectFour:
             if win2:
                 print("AI win")
                 return False
+
+    def iterative_deepening(self):
+        timeout = time.time() +10
+        depth=1
+        column,value = self.minmax(self.columnorder,self.board,self.played,depth,False)
+        while True:
+            if abs(value) >= 1000000:
+                return column, value
+            depth += 1
+            column,value = self.minmax(self.columnorder,self.board,self.played,depth,False)
+            end_time = time.time()
+            if timeout < end_time:
+                return column, value
+
     def remove_column_if_full(self,column):
         if self.played[column] >= self.rowcount:
             self.columnorder.remove(column)
