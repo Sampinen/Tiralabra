@@ -30,3 +30,5 @@ Koitin viimeisellä viikolla kysyä pariin kertaan apua ChatGPT:ltä ja se antoi
 - https://github.com/KeithGalli/Connect4-Python
 
 - https://en.wikipedia.org/wiki/Minimax
+
+- https://github.com/msaveski/connect-four/tree/master
