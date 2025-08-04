@@ -46,29 +46,32 @@ class ConnectFour:
                 print("Player win")
                 return False
             self.remove_column_if_full(column)
+            if len(self.columnorder) == 0:
+                print("Tie")
+                return False
             minmax = self.iterative_deepening()
             best_column = minmax[0]
             print(minmax)
-            if best_column is None:
-                print("No empty cells left")
-                return False
             row2 = self.played[best_column]+1
             self.board = self.play(best_column,self.player2,self.board,self.played)
             self.remove_column_if_full(best_column)
+            if len(self.columnorder) ==0:
+                print("Tie")
+                return False
             self.columnorder = self.order_colummns(self.columnorder,self.columndepth)
             win2 = self.check_win_cell(row2,best_column,self.player2,self.board)
             self.print_board()
             if win2:
                 print("AI win")
                 return False
-            #print(str(self.memory))
 
     def iterative_deepening(self):
-        timeout = time.time() +10
+        timeout = time.time() +5
         depth=1
         column,value = self.minmax(self.columnorder,self.board,self.played,depth,False)
         while True:
-            if abs(value) >= 1000000:
+            print("Depth: "+str(depth))
+            if abs(value) >= 1000000 or value == 0.5:
                 return column, value
             depth += 1
             column,value = self.minmax(self.columnorder,self.board,self.played,depth,False)
@@ -222,15 +225,21 @@ class ConnectFour:
     def minmax(self,columnorder,board,played,depth,maxplayer,alpha=-99999999,beta=9999999):
         newcolumnorder = copy.deepcopy(columnorder)
         self.get_valid_columns(played,newcolumnorder)
-        if str(board) in self.memory:
-            return None, self.memory[str(board)]
+        board_key = str(board)
+        if board_key in self.memory:
+            column = self.memory[board_key]
+            newcolumnorder.remove(column)
+            newcolumnorder.insert(0,column)
+        if maxplayer:
+            value = -99999999
+        else:
+            value = 99999999
         if depth == 0:
             return None,self.score_board(board,played)
         if len(newcolumnorder) == 0:
-            return None,0
+            return None,0.5
         column = newcolumnorder[0]
         if maxplayer: # Human player
-            value = -99999999
             for c in newcolumnorder:
                 newplayed = copy.deepcopy(played)
                 newboard = copy.deepcopy(board)
@@ -238,7 +247,7 @@ class ConnectFour:
                 self.play(c,self.player1,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player1,newboard):
                     self.columndepth[c] = depth
-                    self.memory[str(newboard)] = 1000000 +depth
+                    self.memory[board_key] = c
                     return c, 1000000 + depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,False,alpha,beta)[1]
                 if new_value > value:
@@ -248,9 +257,9 @@ class ConnectFour:
                 if alpha >= beta:
                     break
             self.columndepth[column] = depth
+            self.memory[board_key] = column
             return column, value
         else: #minplayer, AI
-            value = 9999999
             for c in newcolumnorder:
                 newplayed = copy.deepcopy(played)
                 newboard = copy.deepcopy(board)
@@ -258,7 +267,7 @@ class ConnectFour:
                 self.play(c,self.player2,newboard,newplayed)
                 if self.check_win_cell(r,c,self.player2,newboard):
                     self.columndepth[c] = depth
-                    self.memory[str(newboard)] = -1000000 -depth
+                    self.memory[board_key] = c
                     return c, -1000000 -depth
                 new_value = self.minmax(newcolumnorder,newboard,newplayed,depth-1,True,alpha,beta)[1]
                 if new_value < value:
@@ -268,4 +277,5 @@ class ConnectFour:
                 if alpha >= beta:
                     break
             self.columndepth[column] = depth
+            self.memory[board_key] = column
             return column, value
