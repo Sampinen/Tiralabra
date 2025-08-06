@@ -7,6 +7,7 @@ class TestConnect4(unittest.TestCase):
         self.board = self.game.board
         self.played =self.game.played
         self.columnorder = self.game.columnorder
+        self.player1 = self.game.player1 = "e"
 
     def test_play_piece(self):
         self.assertEqual(self.board[1][1],"  ")
@@ -114,6 +115,50 @@ class TestConnect4(unittest.TestCase):
         self.game.play(4,"AI",self.board,self.played)
         column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
         self.assertEqual(column,2)
+
+    def test_minmax_stops_vertical_opponent_win_within_2_moves(self):
+        self.game.play(7,"e",self.board,self.played)
+        self.game.play(7,"e",self.board,self.played)
+        self.game.play(7,"e",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,2,False)
+        self.assertEqual(column,7)
+
+    def test_minmax_stops_horizontal_opponent_win_within_2_moves(self):
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(5,"AI",self.board,self.played)      
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,2,False)
+        self.assertEqual(column,1)
+
+    def test_minmax_stops_opponent_diagonal_up_win_within_2_moves(self):
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"AI",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,2,False)
+        self.assertEqual(column,1)
+
+    def test_minmax_stops_diagonal_down_opponent_win_within_2_moves(self):
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(3,"AI",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)    
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,2,False)
+        self.assertEqual(column,2)
+
+
+
 
 
     def test_iterative_deepening_finds_a_win_within_5_moves(self):
