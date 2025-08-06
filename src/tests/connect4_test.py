@@ -75,7 +75,35 @@ class TestConnect4(unittest.TestCase):
         self.game.get_valid_columns(self.played,self.columnorder)
         self.assertEqual(1 in self.columnorder, False)
 
-    def test_minmax_finds_a_win_within_5_moves(self):
+    def test_minmax_finds_immediate_horizontal_win(self):
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
+        self.assertEqual(column,3)
+
+    def test_minmax_finds_immediate_vertical_win(self):
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
+        self.assertEqual(column,1)
+
+    def test_minmax_finds_immediate_diagonal_down_win(self):
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
+        self.assertEqual(column,3)
+
+
+    def test_iterative_deepening_finds_a_win_within_5_moves(self):
         self.game.play(1,"e",self.board,self.played)
         self.game.play(1,"e",self.board,self.played)
         self.game.play(1,"e",self.board,self.played)
@@ -95,7 +123,7 @@ class TestConnect4(unittest.TestCase):
         self.assertEqual(column, 2)
         self.assertLessEqual(score,-1000000)
 
-    def test_minmax_wins_within_5_moves_when_win_is_found(self):
+    def test_iterative_deepening_wins_within_5_moves_when_win_is_found(self):
         self.game.play(1,"e",self.board,self.played)
         self.game.play(1,"e",self.board,self.played)
         self.game.play(1,"e",self.board,self.played)
