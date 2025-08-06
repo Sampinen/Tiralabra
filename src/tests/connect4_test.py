@@ -102,6 +102,19 @@ class TestConnect4(unittest.TestCase):
         column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
         self.assertEqual(column,3)
 
+    def test_minmax_finds_immediate_diagonal_up_win(self):
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"AI",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        column,score=self.game.minmax(self.columnorder,self.board,self.played,1,False)
+        self.assertEqual(column,2)
+
 
     def test_iterative_deepening_finds_a_win_within_5_moves(self):
         self.game.play(1,"e",self.board,self.played)
