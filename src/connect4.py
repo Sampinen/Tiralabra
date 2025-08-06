@@ -133,7 +133,7 @@ class ConnectFour:
                 break
         i = -1
         continousrow = True
-        while i < 0:
+        while i >= -3:
             if self.is_valid_location(r+i*dr,c+i*dc):
                 if board[r+i*dr][c+i*dc] == p:
                     score += 1
