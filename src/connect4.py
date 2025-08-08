@@ -29,7 +29,6 @@ class ConnectFour:
             row = played[column]+1
             board[row][column] = str(player)
             played[column] +=1
-        return board
 
     def game_loop(self):
         """This is the main game loop that runs the game"""
@@ -39,7 +38,7 @@ class ConnectFour:
         while True:
             column = int(input("Pick a column (1-7): "))
             row = self.played[column]+1
-            self.board = self.play(column, self.player1,self.board,self.played)
+            self.play(column, self.player1,self.board,self.played)
             win1 = self.check_win_cell(row,column,self.player1,self.board)
             self.print_board()
             if win1:
@@ -53,7 +52,7 @@ class ConnectFour:
             best_column = minmax[0]
             print(minmax)
             row2 = self.played[best_column]+1
-            self.board = self.play(best_column,self.player2,self.board,self.played)
+            self.play(best_column,self.player2,self.board,self.played)
             self.remove_column_if_full(best_column)
             if len(self.columnorder) ==0:
                 print("Tie")
@@ -189,10 +188,12 @@ class ConnectFour:
         return board_score
 
     def give_points(self,winrow,score, emptyorp):
-        if emptyorp <=2: #no more space for a win
+        if emptyorp <=2:
+
+ #no more space for a win
             return 0
         if winrow >= 3: # 3 in a row
-            return 12
+            return 10
         if score >= 3 or winrow ==2: # 2 in a continous row or 3 or more pieces within range for a winrow
             return 7
         if score >= 1: # At least 1 in range for a winrow
