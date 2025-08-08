@@ -71,12 +71,12 @@ class ConnectFour:
         while True:
             print("Depth: "+str(depth))
             if abs(value) >= 1000000 or value == 0.5:
-                return column, value
+                return column, value,depth
             depth += 1
             column,value = self.minmax(self.columnorder,self.board,self.played,depth,False)
             end_time = time.time()
             if timeout < end_time:
-                return column, value
+                return column, value,depth
 
     def remove_column_if_full(self,column):
         if self.played[column] >= self.rowcount:
@@ -188,9 +188,7 @@ class ConnectFour:
         return board_score
 
     def give_points(self,winrow,score, emptyorp):
-        if emptyorp <=2:
-
- #no more space for a win
+        if emptyorp <=2: #no more space for a win
             return 0
         if winrow >= 3: # 3 in a row
             return 10
@@ -209,6 +207,7 @@ class ConnectFour:
         points2 = self.give_points(winrow2, score2, emptyorp2)
         points3 = self.give_points(winrow3, score3, emptyorp3)
         points4 = self.give_points(winrow4, score4, emptyorp4)
+        #print(str(r)+" "+str(c)+" "+str(points1 + points2 + points3 +points4))
         return points1 + points2 + points3 +points4
     def check_win_cell(self,r,c,p,board):
         """Checks a specific cell and whether or not it gives a victory"""
