@@ -174,7 +174,7 @@ class TestConnect4(unittest.TestCase):
         self.game.play(4,"e",self.board,self.played)
         self.game.play(5,"AI",self.board,self.played)
         self.game.play(7,"e",self.board,self.played)
-        column, score = self.game.iterative_deepening()
+        column, score, _ = self.game.iterative_deepening()
         self.assertEqual(column, 2)
         self.assertLessEqual(score,-1000000)
 
@@ -194,13 +194,13 @@ class TestConnect4(unittest.TestCase):
         self.game.play(4,"e",self.board,self.played)
         self.game.play(5,"AI",self.board,self.played)
         self.game.play(7,"e",self.board,self.played)
-        column, score = self.game.iterative_deepening()
+        column, score, _ = self.game.iterative_deepening()
         self.game.play(column,"AI",self.board,self.played)
         self.game.play(4,"e",self.board,self.played)
-        column, score = self.game.iterative_deepening()
+        column, score,_ = self.game.iterative_deepening()
         self.game.play(column,"AI",self.board,self.played)
         self.game.play(3,"e",self.board,self.played)
-        column, score = self.game.iterative_deepening()
+        column, score, _ = self.game.iterative_deepening()
         self.game.play(column,"AI",self.board,self.played)
         self.assertEqual(self.game.check_win_cell(3,3,"AI",self.board), True)
 
@@ -222,3 +222,49 @@ class TestConnect4(unittest.TestCase):
 
         score = self.game.score_board(self.board,self.played)
         self.assertEqual(score, 6)
+
+    def test_iterative_deepening_stops_when_it_finds_a_draw(self):
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(1,"e",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(1,"e",self.board,self.played)
+
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(2,"AI",self.board,self.played)
+
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(3,"AI",self.board,self.played)
+        self.game.play(3,"AI",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+
+        self.game.play(4,"AI",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+
+        self.game.play(5,"e",self.board,self.played)
+        self.game.play(5,"e",self.board,self.played)
+        self.game.play(5,"AI",self.board,self.played)
+        self.game.play(5,"AI",self.board,self.played)
+        self.game.play(5,"e",self.board,self.played)
+
+        self.game.play(6,"AI",self.board,self.played)
+        self.game.play(6,"AI",self.board,self.played)
+        self.game.play(6,"e",self.board,self.played)
+        self.game.play(6,"e",self.board,self.played)
+        self.game.play(6,"AI",self.board,self.played)
+
+        self.game.play(7,"e",self.board,self.played)
+        self.game.play(7,"e",self.board,self.played)
+        self.game.play(7,"AI",self.board,self.played)
+        self.game.play(7,"AI",self.board,self.played)
+        self.game.play(7,"e",self.board,self.played)
+
+        _,_,depth = self.game.iterative_deepening()
+        self.assertEqual(depth,8)
