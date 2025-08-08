@@ -158,9 +158,6 @@ class TestConnect4(unittest.TestCase):
         self.assertEqual(column,2)
 
 
-
-
-
     def test_iterative_deepening_finds_a_win_within_5_moves(self):
         self.game.play(1,"e",self.board,self.played)
         self.game.play(1,"e",self.board,self.played)
@@ -206,3 +203,22 @@ class TestConnect4(unittest.TestCase):
         column, score = self.game.iterative_deepening()
         self.game.play(column,"AI",self.board,self.played)
         self.assertEqual(self.game.check_win_cell(3,3,"AI",self.board), True)
+
+    def test_heuristics_gives_a_correct_score(self):
+        self.game.play(1,"AI",self.board,self.played)
+        self.game.play(2,"e",self.board,self.played)
+        self.game.play(3,"e",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+        self.game.play(5,"AI",self.board,self.played) 
+        score = self.game.score_board(self.board,self.played)
+        self.assertEqual(score, -28)
+
+    def test_heuristics_gives_a_correct_score2(self):
+        self.game.play(4,"e",self.board,self.played)
+        self.game.play(4,"AI",self.board,self.played)
+
+        score = self.game.score_board(self.board,self.played)
+        self.assertEqual(score, 6)
